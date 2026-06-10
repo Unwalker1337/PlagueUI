@@ -150,16 +150,4 @@ miscSection2:AddMultiDropdown('Select Targets', {'Players','NPCs','Vehicles','Dr
     print("Selected targets:", table.concat(t, ", "))
 end)
 
--- Color picker for watermark color (custom section)
-miscSection2:AddLabel('Watermark')
-miscSection2:AddButton('Toggle Watermark', function()
-    watermark:Visible(not watermark:Visible())
-end)
-miscSection2:AddTextBox('Watermark Text', 'Enter text', true, 5, function(t)
-    if t and t ~= "" then
-        watermark:ChangeText(t)
-    end
-end)
-miscSection2:AddSeparateBar()
-
 library:Init('Misc')
