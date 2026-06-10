@@ -464,6 +464,7 @@ function OpenedColor(text, ColourDisplay, Action, def)
 
 	SETCOLOR.MouseButton1Click:Connect(function()
 		ColourDisplay.ImageColor3 = ColourDisplayBIG.ImageColor3
+		ColourDisplay.BackgroundColor3 = ColourDisplayBIG.ImageColor3
 		closePalette()
 		pcall(function()
 			Action(Color3.fromRGB(ColourDisplayBIG.ImageColor3.R * 200, ColourDisplayBIG.ImageColor3.G * 200, ColourDisplayBIG.ImageColor3.B * 200))
