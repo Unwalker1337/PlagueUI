@@ -2342,6 +2342,7 @@ library.theme = {
 	TextSecondary = Color3.fromRGB(152, 152, 152),
 	ToggleOn = Color3.fromRGB(84, 122, 181),
 	SliderFill = Color3.fromRGB(88, 130, 193),
+	NotifPosition = "TopRight",
 }
 
 function library:UpdateTheme(props)
@@ -2357,7 +2358,7 @@ function library:UpdateTheme(props)
 	end
 end
 
-function library:CreateSettings(winName)
+library:CreateSettings = function(winName)
 	winName = winName or 'Settings'
 	local win = library:AddWindow(winName)
 	local sec = win:AddSection('Theme Colors')
@@ -2378,6 +2379,14 @@ function library:CreateSettings(winName)
 	end)
 	sec:AddColorPallete('Slider Fill', library.theme.SliderFill, function(c)
 		library:UpdateTheme({SliderFill = c})
+	end)
+	sec:AddSeparateBar()
+	local sec2 = win:AddSection('Notifications')
+	sec2:AddDropdown('Position', {'TopRight','TopLeft','BottomRight','BottomLeft'}, library.theme.NotifPosition or 'TopRight', function(v)
+		library:SetNotifPosition(v)
+	end)
+	sec2:AddButton('Test Notification', function()
+		library:Notify({title = 'Test', text = 'This is a test notification', duration = 3})
 	end)
 	sec:AddSeparateBar()
 	sec:AddButton('Toggle Keybinds', function()
