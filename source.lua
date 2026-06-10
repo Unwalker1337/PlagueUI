@@ -53,7 +53,7 @@ end
 
 
 function isColliding(guiObject0, guiObject1)		
-	if not typeof(guiObject0) == "Instance" or not typeof(guiObject1) == "Instance" then 
+	if typeof(guiObject0) ~= "Instance" or typeof(guiObject1) ~= "Instance" then 
 		error("argument must be an instance") 
 		return 
 	end
@@ -161,7 +161,7 @@ local function draggable(obj,extern,parented)
 						globals.dragging = false
 						souid = false
 						connection:Disconnect()
-						if isColliding(obj,obj.Section)  then
+						if obj.Section and isColliding(obj,obj.Section)  then
 							obj = obj.Section
 						end
 					end
@@ -1476,7 +1476,7 @@ function library:AddWindow(text)
 			local st = def or Max/2
 			obj4.FocusLost:Connect(function(n)
 				if n then
-					if obj4.Text == '' or obj4.Text == ' ' or obj4.Text:find(' ') or obj4.Text == nil then
+					if obj4.Text == nil or obj4.Text == '' or obj4.Text == ' ' or obj4.Text:find(' ') then
 						Value = tonumber(obj4.Text)
 						obj4.Text = st
 						local SliderDef = math.clamp(tonumber(obj4.Text), Min, Max) or math.clamp(50, Min, Max)
@@ -1797,9 +1797,9 @@ function library:AddWindow(text)
 			UpdateMainSize(nil,true)
 			function y:UpdateValue(val)
 				activated = val
-				Update(a)
+				Update()
 			end
-			Update(a)
+			Update()
 
 			Interactive.MouseButton1Click:Connect(Update)
 			Interactive.MouseEnter:Connect(function()
@@ -2471,7 +2471,7 @@ function library:SetNotifPosition(pos)
 	end
 end
 
-library:CreateSettings = function(winName)
+function library:CreateSettings(winName)
 	winName = winName or 'Settings'
 	local win = library:AddWindow(winName)
 	local sec = win:AddSection('Theme Colors')
