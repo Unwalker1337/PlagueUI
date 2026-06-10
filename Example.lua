@@ -1,48 +1,172 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Unwalker1337/PlagueUI/main/source.lua", true))()
 
+-- Customize UI text
+library:ChangeWeb("plagueui.xyz")          -- changes the URL in bottom-left
+library:ChangeGame("PlagueUI v2 | Beta")    -- changes the game label in bottom-right
 
+-- Customize GUI toggle keybind (default: RightControl)
+library:SetGUIToggleKey(Enum.KeyCode.RightControl)
+
+-- Create a watermark with custom text
+local watermark = library:AddWatermark("PlagueUI | User")
+
+-- Create window tabs
 local Legit = library:AddWindow('Legit')
 local Rage = library:AddWindow('Rage')
-local AntiAim = library:AddWindow('Anti-Aim')
+local Visuals = library:AddWindow('Visuals')
+local Misc = library:AddWindow('Misc')
+
+-- Create Settings tab (includes ThemeManager + ConfigManager)
 local Settings = library:CreateSettings('Settings')
 
+-- ============================================
+-- LEGIT TAB
+-- ============================================
+local legitSection = Legit:AddSection('Aimbot')
 
-local e = Legit:AddSection('All features')
-
-e:AddLabel('Template Label')
-
-e:AddButton('Test button', function()
-  print('a')
+legitSection:AddLabel('Main Settings')
+legitSection:AddToggle('Enabled', true, Enum.KeyCode.L, function(v)
+    print("Aimbot:", v)
+end)
+legitSection:AddToggle('Visible Check', true, nil, function(v)
+    print("Visible check:", v)
+end)
+legitSection:AddToggle('Auto Shoot', false, nil, function(v)
+    print("Auto shoot:", v)
+end)
+legitSection:AddSeparateBar()
+legitSection:AddLabel('Accuracy')
+legitSection:AddSlider('Hit Chance', 100, 0, 75, function(v)
+    print("Hit chance:", v)
+end)
+legitSection:AddSlider('Smoothness', 100, 1, 15, function(v)
+    print("Smooth:", v)
 end)
 
-e:AddToggle('Testing Toggle',true,Enum.KeyCode.LeftControl, function(v)
-    print(v)
+local legitSection2 = Legit:AddSection('Triggerbot')
+legitSection2:AddToggle('Triggerbot', false, Enum.KeyCode.T, function(v)
+    print("Triggerbot:", v)
+end)
+legitSection2:AddSlider('Trigger Delay', 500, 0, 50, function(v)
+    print("Delay:", v, "ms")
 end)
 
-e:AddToggle('Testing Toggle',true,nil, function(v)
-    print(v)
+-- ============================================
+-- RAGE TAB
+-- ============================================
+local rageSection = Rage:AddSection('Ragebot')
+rageSection:AddToggle('Ragebot', false, Enum.KeyCode.R, function(v)
+    print("Rage:", v)
+end)
+rageSection:AddToggle('Automatic Penetration', true, nil, function(v)
+    print("Penetration:", v)
+end)
+rageSection:AddSlider('Minimum Damage', 100, 0, 70, function(v)
+    print("Min damage:", v)
+end)
+rageSection:AddSeparateBar()
+
+rageSection:AddLabel('Resolver')
+rageSection:AddToggle('Resolver', true, nil, function(v)
+    print("Resolver:", v)
+end)
+rageSection:AddSlider('Resolve Type', 3, 1, 1, function(v)
+    print("Resolve type:", v)
 end)
 
-e:AddSlider('Template Slider', 100, 10, 50, function(c)
+-- ============================================
+-- VISUALS TAB
+-- ============================================
+local visSection = Visuals:AddSection('ESP')
+
+visSection:AddLabel('Player ESP')
+visSection:AddToggle('Box ESP', true, Enum.KeyCode.Z, function(v)
+    print("Box ESP:", v)
+end)
+visSection:AddToggle('Tracers', false, nil, function(v)
+    print("Tracers:", v)
+end)
+visSection:AddToggle('Health Bar', true, nil, function(v)
+    print("Health bar:", v)
+end)
+visSection:AddColorPallete('Box Color', Color3.fromRGB(89, 125, 255), function(c)
+    print("Box color:", c)
+end)
+visSection:AddSeparateBar()
+
+visSection:AddLabel('World')
+visSection:AddToggle('Night Mode', false, nil, function(v)
+    print("Night mode:", v)
+end)
+visSection:AddSlider('Brightness', 10, 0, 5, function(v)
+    print("Brightness:", v)
 end)
 
-e:AddKeyBind('Template Keybind', Enum.KeyCode.Y, function()
-    library:Notify({title = 'Keybind', text = 'Y pressed', duration = 2})
+local visSection2 = Visuals:AddSection('Chams')
+visSection2:AddToggle('Chams', true, nil, function(v)
+    print("Chams:", v)
+end)
+visSection2:AddColorPallete('Chams Color', Color3.fromRGB(255, 70, 70), function(c)
+    print("Chams color:", c)
+end)
+visSection2:AddDropdown('Chams Material', {'ForceField','Neon','Glass'}, 'ForceField', function(v)
+    print("Material:", v)
 end)
 
-e:AddColorPallete('Testing Color Pallete', Color3.fromRGB(89, 125, 255), function(a)
-  print(a)
+-- ============================================
+-- MISC TAB
+-- ============================================
+local miscSection = Misc:AddSection('Movement')
+miscSection:AddToggle('Bunny Hop', true, Enum.KeyCode.Space, function(v)
+    print("BHop:", v)
+end)
+miscSection:AddToggle('Auto Strafe', false, nil, function(v)
+    print("Auto strafe:", v)
+end)
+miscSection:AddSlider('Jump Power', 100, 10, 50, function(v)
+    print("Jump power:", v)
 end)
 
-e:AddTextBox('No filter',nil,false,5,function(a) print(a) end)
-e:AddTextBox('Only numbers',nil,false,1,function(a) print(a) end)
-e:AddTextBox('No special chars',nil,false,2,function(a) print(a) end)
-e:AddTextBox('Only nums+chars',nil,false,3,function(a) print(a) end)
-e:AddTextBox('Only Chars',nil,false,4,function(a) print(a) end)
+local miscSection2 = Misc:AddSection('Settings')
+miscSection2:AddLabel('Customize your GUI')
+miscSection2:AddKeyBind('Toggle Menu', Enum.KeyCode.RightControl, function()
+    library:Notify({title = 'Menu', text = 'GUI toggled', duration = 2})
+end)
+miscSection2:AddSeparateBar()
 
-e:AddSeparateBar()
+-- Notification customization
+miscSection2:AddLabel('Notifications')
+miscSection2:AddDropdown('Notif Position', {'TopRight','TopLeft','BottomRight','BottomLeft'}, 'TopRight', function(v)
+    library:SetNotifPosition(v)
+end)
+miscSection2:AddButton('Test Notification', function()
+    library:Notify({title = 'PlagueUI', text = 'Notification test!', duration = 3})
+end)
+miscSection2:AddSeparateBar()
 
-e:AddDropdown('Testing Dropdown',{'opt1','opt2','opt3'},'opt2',function(a) print(a) end)
+-- MultiDropdown example
+miscSection2:AddLabel('Multi-Select Example')
+miscSection2:AddMultiDropdown('Select Targets', {'Players','NPCs','Vehicles','Dropped Items'}, {'Players','Vehicles'}, function(t)
+    print("Selected targets:", table.concat(t, ", "))
+end)
 
+-- Color picker for watermark color (custom section)
+miscSection2:AddLabel('Watermark')
+miscSection2:AddButton('Toggle Watermark', function()
+    watermark:Visible(not watermark:Visible())
+end)
+miscSection2:AddTextBox('Watermark Text', 'Enter text', true, 5, function(t)
+    if t and t ~= "" then
+        watermark:ChangeText(t)
+    end
+end)
+miscSection2:AddSeparateBar()
 
-library:Init('Settings')
+-- Info
+local miscSection3 = Misc:AddSection('Info')
+miscSection3:AddLabel('FPS: shown in top-right corner')
+miscSection3:AddLabel('Use RightControl to toggle GUI')
+miscSection3:AddLabel('Settings tab has Theme & Config managers')
+
+-- Init: show a default tab
+library:Init('Misc')
