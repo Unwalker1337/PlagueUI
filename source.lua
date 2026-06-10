@@ -2941,12 +2941,10 @@ function library:CreateSettings(winName)
 	end)
 	local sec3 = win:AddSection('GUI Toggle')
 	sec3:AddKeyBind('Toggle GUI', Enum.KeyCode.RightControl, function()
-		guiVisible = not guiVisible
-		MAIN.Visible = guiVisible
+		toggleGUI()
 	end)
 	sec3:AddButton('Toggle GUI', function()
-		guiVisible = not guiVisible
-		MAIN.Visible = guiVisible
+		toggleGUI()
 	end)
 	sec3:AddSeparateBar()
 	sec3:AddButton('Unload Script', function()
@@ -3017,14 +3015,32 @@ library.registry = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}, 
 local guiVisible = true
 local guiToggleKey = Enum.KeyCode.RightControl
 
+local function toggleGUI()
+	guiVisible = not guiVisible
+	if guiVisible then
+		MAIN.Visible = true
+		MAIN.BackgroundTransparency = 1
+		TweenService:Create(MAIN, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+			BackgroundTransparency = 0
+		}):Play()
+	else
+		TweenService:Create(MAIN, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+			BackgroundTransparency = 1
+		}):Play()
+		task.delay(0.25, function()
+			MAIN.Visible = false
+			MAIN.BackgroundTransparency = 0
+		end)
+	end
+end
+
 function library:SetGUIToggleKey(key)
 	guiToggleKey = key
 end
 
 game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
 	if not gp and input.KeyCode == guiToggleKey then
-		guiVisible = not guiVisible
-		MAIN.Visible = guiVisible
+		toggleGUI()
 	end
 end)
 
