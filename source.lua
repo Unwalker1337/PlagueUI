@@ -1777,6 +1777,10 @@ function library:AddWindow(text)
 			if keybind then
 				local ischanging = false;
 				local KeyCode = keybind
+				local keyName = keybind.Name or tostring(keybind)
+				table.insert(library.keybinds, {name = Text, key = keyName, keybind = keybind, object = KeyButton, func = Update})
+				spawn(refreshKeybindList)
+
 				game:GetService("UserInputService").InputBegan:connect(function(a, gp) 
 					if not gp then 
 						if (a.KeyCode.Name == KeyCode or a.KeyCode.Name == KeyCode.Name) and ischanging == false then 
@@ -1802,6 +1806,13 @@ function library:AddWindow(text)
 						}):Play()
 						KeyButton:TweenSize(UDim2.new(0,getsize( v1.KeyCode.Name),0,13), "Out", "Quint", 0.3, true)
 						KeyButton.Text = v1.KeyCode.Name
+						for _, kb in pairs(library.keybinds) do
+							if kb.object == KeyButton then
+								kb.key = v1.KeyCode.Name
+								kb.keybind = v1.KeyCode
+							end
+						end
+						spawn(refreshKeybindList)
 						KeyCode = v1.KeyCode.Name;
 						wait(.2)
 						ischanging = false
@@ -2322,6 +2333,136 @@ spawn(function()
 	Start = TimeFunction()
 	RunService.Heartbeat:Connect(HeartbeatUpdate)
 end)
-library.GUI = PCR_1 
+library.theme = {
+	MainBg = Color3.fromRGB(16, 16, 18),
+	SectionBg = Color3.fromRGB(18, 18, 20),
+	InnerBg = Color3.fromRGB(26, 26, 30),
+	Accent = Color3.fromRGB(91, 133, 197),
+	TextPrimary = Color3.fromRGB(221, 221, 221),
+	TextSecondary = Color3.fromRGB(152, 152, 152),
+	ToggleOn = Color3.fromRGB(84, 122, 181),
+	SliderFill = Color3.fromRGB(88, 130, 193),
+}
+
+function library:UpdateTheme(props)
+	for k, v in pairs(props) do
+		library.theme[k] = v
+	end
+end
+
+library.keybinds = {}
+local keybindListFrame = nil
+local keybindListVisible = false
+
+local function createKeybindList()
+	if keybindListFrame then keybindListFrame:Destroy() end
+
+	keybindListFrame = Instance.new("Frame")
+	keybindListFrame.Name = "KeybindList"
+	keybindListFrame.Parent = PCR_1
+	keybindListFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
+	keybindListFrame.BorderSizePixel = 0
+	keybindListFrame.Position = UDim2.new(0.01, 0, 0.01, 0)
+	keybindListFrame.Size = UDim2.new(0, 180, 0, 26)
+	keybindListFrame.ZIndex = 100
+	keybindListFrame.Visible = false
+
+	local listCorner = Instance.new("UICorner")
+	listCorner.CornerRadius = UDim.new(0, 6)
+	listCorner.Parent = keybindListFrame
+
+	local listStroke = Instance.new("UIStroke")
+	listStroke.Color = Color3.fromRGB(255, 255, 255)
+	listStroke.Transparency = 0.92
+	listStroke.Thickness = 1
+	listStroke.Parent = keybindListFrame
+
+	local title = Instance.new("TextLabel")
+	title.Name = "Title"
+	title.Parent = keybindListFrame
+	title.BackgroundTransparency = 1
+	title.BorderSizePixel = 0
+	title.Position = UDim2.new(0, 8, 0, 4)
+	title.Size = UDim2.new(1, -16, 0, 18)
+	title.ZIndex = 101
+	title.Font = Enum.Font.SourceSansSemibold
+	title.Text = "Keybinds"
+	title.TextColor3 = Color3.fromRGB(200, 200, 200)
+	title.TextSize = 15
+	title.TextXAlignment = Enum.TextXAlignment.Left
+
+	local listLayout = Instance.new("UIListLayout")
+	listLayout.Name = "Layout"
+	listLayout.Parent = keybindListFrame
+	listLayout.Padding = UDim.new(0, 2)
+	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+	local padding = Instance.new("UIPadding")
+	padding.Parent = keybindListFrame
+	padding.PaddingTop = UDim.new(0, 26)
+	padding.PaddingLeft = UDim.new(0, 8)
+	padding.PaddingBottom = UDim.new(0, 6)
+end
+
+local function refreshKeybindList()
+	if not keybindListFrame then createKeybindList() end
+
+	for _, v in pairs(keybindListFrame:GetChildren()) do
+		if v:IsA("Frame") and v.Name ~= "Title" then
+			v:Destroy()
+		end
+	end
+
+	local i = 0
+	for _, kb in pairs(library.keybinds) do
+		i = i + 1
+		local entry = Instance.new("Frame")
+		entry.Name = "Entry"
+		entry.Parent = keybindListFrame
+		entry.BackgroundTransparency = 1
+		entry.BorderSizePixel = 0
+		entry.Size = UDim2.new(1, -16, 0, 18)
+		entry.ZIndex = 101
+
+		local nameLabel = Instance.new("TextLabel")
+		nameLabel.Parent = entry
+		nameLabel.BackgroundTransparency = 1
+		nameLabel.BorderSizePixel = 0
+		nameLabel.Size = UDim2.new(0.65, 0, 1, 0)
+		nameLabel.ZIndex = 102
+		nameLabel.Font = Enum.Font.SourceSansSemibold
+		nameLabel.Text = kb.name
+		nameLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+		nameLabel.TextSize = 14
+		nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+		local keyLabel = Instance.new("TextLabel")
+		keyLabel.Parent = entry
+		keyLabel.BackgroundTransparency = 1
+		keyLabel.BorderSizePixel = 0
+		keyLabel.Size = UDim2.new(0.35, 0, 1, 0)
+		keyLabel.Position = UDim2.new(0.65, 0, 0, 0)
+		keyLabel.ZIndex = 102
+		keyLabel.Font = Enum.Font.SourceSansBold
+		keyLabel.Text = kb.key
+		keyLabel.TextColor3 = Color3.fromRGB(91, 133, 197)
+		keyLabel.TextSize = 14
+		keyLabel.TextXAlignment = Enum.TextXAlignment.Right
+	end
+
+	keybindListFrame.Size = UDim2.new(0, 180, 0, 26 + i * 20)
+end
+
+function library:ShowKeybinds(val)
+	keybindListVisible = val
+	if not keybindListFrame then createKeybindList() end
+	keybindListFrame.Visible = val
+end
+
+function library:ToggleKeybinds()
+	library:ShowKeybinds(not keybindListVisible)
+end
+
+library.GUI = PCR_1
 
 return library
