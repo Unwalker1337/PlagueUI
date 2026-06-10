@@ -3,8 +3,9 @@ local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Unwal
 
 local Legit = library:AddWindow('Legit')
 local Rage = library:AddWindow('Rage')
-local Anti-Aim = library:AddWindow('Anti-Aim')
+local AntiAim = library:AddWindow('Anti-Aim')
 local watermark = library:AddWatermark('');
+local Settings = library:CreateSettings('Settings')
 
 
 local e = Legit:AddSection('All features')
@@ -106,9 +107,15 @@ spawn(function()
 end)
 
 
+library:Init('Settings')
+
 wait(4)
 
 
 
 wait(2)
 watermark:Visible(true)
+spawn(function()
+	wait(5)
+	library:ShowKeybinds(true)
+end)
