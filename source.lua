@@ -794,7 +794,7 @@ function AddRipple(button,ael,ayo)
 
 		backgroundFadeIn.Completed:Wait()
 
-		local backgroundFadeOut = TweenService:Create(ael, tweenInfo, {TextColor3 = Color3.fromRGB(197, 197, 197)})
+		local backgroundFadeOut = TweenService:Create(ael, tweenInfo, {TextColor3 = library.theme.TextSecondary or Color3.fromRGB(197, 197, 197)})
 
 		repeat wait() until not hovering
 
@@ -1246,7 +1246,7 @@ function library:AddWindow(text)
 		A_label.ZIndex = 3
 		A_label.Font = Enum.Font.SourceSansSemibold
 		A_label.Text = Texto
-		A_label.TextColor3 = Color3.fromRGB(221, 221, 221)
+		A_label.TextColor3 = library.theme.TextPrimary or Color3.fromRGB(221, 221, 221)
 		A_label.TextSize = 17.000
 		A_label.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1612,7 +1612,7 @@ function library:AddWindow(text)
 			TextLabel.ZIndex = 15
 			TextLabel.Font = Enum.Font.SourceSansSemibold
 			TextLabel.Text = Text
-			TextLabel.TextColor3 = Color3.fromRGB(197, 197, 197)
+			TextLabel.TextColor3 = library.theme.TextSecondary or Color3.fromRGB(197, 197, 197)
 			TextLabel.TextSize = 18.000
 			TextLabel.TextWrapped = true
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -1713,7 +1713,7 @@ function library:AddWindow(text)
 			TextLabel.ZIndex = 15
 			TextLabel.Font = Enum.Font.SourceSansBold
 			TextLabel.Text = Text
-			TextLabel.TextColor3 = Color3.fromRGB(84, 84, 84)
+			TextLabel.TextColor3 = library.theme.TextSecondary or Color3.fromRGB(84, 84, 84)
 			TextLabel.TextSize = 14.000
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -1970,7 +1970,7 @@ function library:AddWindow(text)
 			TextLabel.ZIndex = 15
 			TextLabel.Font = Enum.Font.SourceSansBold
 			TextLabel.Text = Text
-			TextLabel.TextColor3 = Color3.fromRGB(197, 197, 197)
+			TextLabel.TextColor3 = library.theme.TextSecondary or Color3.fromRGB(197, 197, 197)
 			TextLabel.TextSize = 14.000
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -2213,7 +2213,7 @@ function library:AddWindow(text)
 			TextLabel.ZIndex = 30
 			TextLabel.Font = Enum.Font.SourceSansSemibold
 			TextLabel.Text = Text
-			TextLabel.TextColor3 = Color3.fromRGB(197, 197, 197)
+			TextLabel.TextColor3 = library.theme.TextSecondary or Color3.fromRGB(197, 197, 197)
 			TextLabel.TextSize = 16.000
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -2388,7 +2388,7 @@ function library:AddWindow(text)
 			TextLabel.ZIndex = 30
 			TextLabel.Font = Enum.Font.SourceSansSemibold
 			TextLabel.Text = Text
-			TextLabel.TextColor3 = Color3.fromRGB(197, 197, 197)
+			TextLabel.TextColor3 = library.theme.TextSecondary or Color3.fromRGB(197, 197, 197)
 			TextLabel.TextSize = 16
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -2550,7 +2550,7 @@ function library:AddWindow(text)
 			TextLabel.ZIndex = 15
             TextLabel.Text=Text
 			TextLabel.Font = Enum.Font.SourceSansBold
-			TextLabel.TextColor3 = Color3.fromRGB(84, 84, 84)
+			TextLabel.TextColor3 = library.theme.TextSecondary or Color3.fromRGB(84, 84, 84)
 			TextLabel.TextSize = 17.000
 
 			Interactive.Name = "Interactive"
@@ -2645,7 +2645,9 @@ library.theme = {
 }
 
 function library:UpdateTheme(props)
+	local old = {}
 	for k, v in pairs(props) do
+		old[k] = library.theme[k]
 		library.theme[k] = v
 	end
 	pcall(function()
@@ -2684,8 +2686,9 @@ function library:UpdateTheme(props)
 	end)
 	pcall(function()
 		if props.TextPrimary then
+			local oldColor = old.TextPrimary or Color3.fromRGB(221, 221, 221)
 			for _, v in pairs(PCR_1:GetDescendants()) do
-				if v:IsA("TextLabel") and v.TextColor3 == Color3.fromRGB(221, 221, 221) then
+				if v:IsA("TextLabel") and v.TextColor3 == oldColor then
 					v.TextColor3 = library.theme.TextPrimary
 				end
 			end
@@ -2693,8 +2696,9 @@ function library:UpdateTheme(props)
 	end)
 	pcall(function()
 		if props.TextSecondary then
+			local oldColor = old.TextSecondary or Color3.fromRGB(197, 197, 197)
 			for _, v in pairs(PCR_1:GetDescendants()) do
-				if v:IsA("TextLabel") and v.TextColor3 == Color3.fromRGB(197, 197, 197) then
+				if v:IsA("TextLabel") and v.TextColor3 == oldColor then
 					v.TextColor3 = library.theme.TextSecondary
 				end
 			end
