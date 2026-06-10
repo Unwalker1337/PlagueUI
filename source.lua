@@ -190,18 +190,6 @@ end
 
 function OpenedColor(text,ColourDisplay,Action,def)
 
-	local paletteOverlay = Instance.new("TextButton")
-	paletteOverlay.Name = "PaletteOverlay"
-	paletteOverlay.Parent = PCR_1
-	paletteOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	paletteOverlay.BackgroundTransparency = 0.5
-	paletteOverlay.BorderSizePixel = 0
-	paletteOverlay.Size = UDim2.new(1, 0, 1, 0)
-	paletteOverlay.ZIndex = 998
-	paletteOverlay.AutoButtonColor = false
-	paletteOverlay.Text = ""
-	paletteOverlay.Visible = false
-
 	local COLORPALLETE = Instance.new("Frame")
 	local PaletteCorner = Instance.new("UICorner")
 	local Holder = Instance.new("Frame")
@@ -272,22 +260,18 @@ function OpenedColor(text,ColourDisplay,Action,def)
 
 	BG.Name = "BG"
 	BG.Parent = Holder
-	BG.BackgroundColor3 = Color3.fromRGB(22, 22, 25)
+	BG.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
 	BG.BorderSizePixel = 0
 	BG.Position = UDim2.new(0, 0, 0.142, 0)
 	BG.Size = UDim2.new(1, 0, 0, 139)
 
 	S12.Name = "S12"
 	S12.Parent = BG
-	S12.BackgroundColor3 = Color3.fromRGB(26, 26, 30)
+	S12.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	S12.BorderSizePixel = 0
 	S12.Position = UDim2.new(0, 12, 0, 8)
 	S12.Size = UDim2.new(0, 156, 0, 113)
 	S12.ZIndex = 23
-
-	local S12Corner = Instance.new("UICorner")
-	S12Corner.CornerRadius = UDim.new(0, 6)
-	S12Corner.Parent = S12
 
 	ColourWheel.Name = "ColourWheel"
 	ColourWheel.Parent = S12
@@ -358,7 +342,7 @@ function OpenedColor(text,ColourDisplay,Action,def)
 
 	S13.Name = "S13"
 	S13.Parent = BG
-	S13.BackgroundColor3 = Color3.fromRGB(26, 26, 30)
+	S13.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 	S13.BorderSizePixel = 0
 	S13.Position = UDim2.new(0, 178, 0, 8)
 	S13.Size = UDim2.new(0, 90, 0, 113)
@@ -373,8 +357,8 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	ColourDisplayBIG.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ColourDisplayBIG.BackgroundTransparency = 1.000
 	ColourDisplayBIG.BorderSizePixel = 0
-	ColourDisplayBIG.Position = UDim2.new(0.15, 0, 0.1, 0)
-	ColourDisplayBIG.Size = UDim2.new(0.7, 0, 0.54, 0)
+	ColourDisplayBIG.Position = UDim2.new(0.18, 0, 0.12, 0)
+	ColourDisplayBIG.Size = UDim2.new(0.64, 0, 0.52, 0)
 	ColourDisplayBIG.ZIndex = 25
 	ColourDisplayBIG.Image = "rbxassetid://3570695787"
 	ColourDisplayBIG.ScaleType = Enum.ScaleType.Slice
@@ -382,51 +366,20 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	ColourDisplayBIG.SliceScale = 0.120
 
 	local DisplayCorner = Instance.new("UICorner")
-	DisplayCorner.CornerRadius = UDim.new(0, 8)
+	DisplayCorner.CornerRadius = UDim.new(0, 6)
 	DisplayCorner.Parent = ColourDisplayBIG
 
-	local buttonFrame = Instance.new("Frame")
-	buttonFrame.Name = "ButtonFrame"
-	buttonFrame.Parent = S13
-	buttonFrame.BackgroundTransparency = 1
-	buttonFrame.BorderSizePixel = 0
-	buttonFrame.Position = UDim2.new(0.1, 0, 0.68, 0)
-	buttonFrame.Size = UDim2.new(0.8, 0, 0, 28)
-	buttonFrame.ZIndex = 23
-
-	local UILG = Instance.new("UIListLayout")
-	UILG.Parent = buttonFrame
-	UILG.FillDirection = Enum.FillDirection.Horizontal
-	UILG.HorizontalAlignment = Enum.HorizontalAlignment.Center
-	UILG.VerticalAlignment = Enum.VerticalAlignment.Center
-	UILG.SortOrder = Enum.SortOrder.LayoutOrder
-	UILG.Padding = UDim.new(0, 8)
-
 	SETCOLOR.Name = "SETCOLOR"
-	SETCOLOR.Parent = buttonFrame
-	SETCOLOR.BackgroundColor3 = library.theme.Accent
-	SETCOLOR.BackgroundTransparency = 0.85
+	SETCOLOR.Parent = S13
+	SETCOLOR.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	SETCOLOR.BackgroundTransparency = 1.000
 	SETCOLOR.BorderSizePixel = 0
-	SETCOLOR.Size = UDim2.new(0, 28, 0, 22)
-	SETCOLOR.ZIndex = 24
+	SETCOLOR.Position = UDim2.new(0.18, 0, 0.69, 0)
+	SETCOLOR.Size = UDim2.new(0, 16, 0, 16)
+	SETCOLOR.ZIndex = 23
 	SETCOLOR.Image = "rbxassetid://1489284025"
-	SETCOLOR.ImageColor3 = Color3.fromRGB(200, 200, 200)
 
-	local setBtnCorner = Instance.new("UICorner")
-	setBtnCorner.CornerRadius = UDim.new(0, 4)
-	setBtnCorner.Parent = SETCOLOR
-
-	RESETALL.Parent = buttonFrame
-	RESETALL.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-	RESETALL.BackgroundTransparency = 0.85
-	RESETALL.BorderSizePixel = 0
-	RESETALL.Size = UDim2.new(0, 28, 0, 22)
-	RESETALL.ZIndex = 24
-	RESETALL.ImageColor3 = Color3.fromRGB(200, 200, 200)
-
-	local resetBtnCorner = Instance.new("UICorner")
-	resetBtnCorner.CornerRadius = UDim.new(0, 4)
-	resetBtnCorner.Parent = RESETALL
+	RESETALL.Position = UDim2.new(0.53, 0, 0.69, 0)
 
 	Upper.Name = "Upper"
 	Upper.Parent = Holder
@@ -459,48 +412,22 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	linedecoupper.Size = UDim2.new(0.96, 0, 0, 1)
 	linedecoupper.ZIndex = 3
 
-	paletteOverlay.Visible = true
-	TweenService:Create(paletteOverlay, TweenInfo.new(0.2), {BackgroundTransparency = 0.5}):Play()
-
 	COLORPALLETE.Visible = true
 	Holder.Visible = true
-	COLORPALLETE.BackgroundTransparency = 1
-	COLORPALLETE.Size = UDim2.new(0, 1, 0, 1)
-
-	TweenService:Create(COLORPALLETE, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-		BackgroundTransparency = 0,
-		Size = UDim2.new(0, 280, 0, 162)
-	}):Play()
-	TweenService:Create(PaletteShadow, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0.4}):Play()
-
-	paletteOverlay.MouseButton1Click:Connect(function()
-		closePalette()
-	end)
 
 	local hsv;
 
-	local function closePalette(callback)
-		TweenService:Create(COLORPALLETE, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
-			BackgroundTransparency = 1,
-			Size = UDim2.new(0, 1, 0, 1)
-		}):Play()
-		TweenService:Create(PaletteShadow, TweenInfo.new(0.25), {ImageTransparency = 1}):Play()
-		TweenService:Create(paletteOverlay, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
-		task.wait(0.25)
-		COLORPALLETE.Visible = false
-		paletteOverlay.Visible = false
-		if callback then pcall(callback) end
-	end
-
 	SETCOLOR.MouseButton1Click:Connect(function()
-		closePalette(function()
-			ColourDisplay.ImageColor3 = ColourDisplayBIG.ImageColor3
-			Action(Color3.fromRGB(ColourDisplayBIG.ImageColor3.R * 200, ColourDisplayBIG.ImageColor3.G * 200, ColourDisplayBIG.ImageColor3.B * 200))
-		end)
+		ColourDisplay.ImageColor3 = ColourDisplayBIG.ImageColor3
+		COLORPALLETE.Visible = false
+
+		pcall(function()
+            Action( Color3.fromRGB(ColourDisplayBIG.ImageColor3.R * 200 ,ColourDisplayBIG.ImageColor3.G * 200 ,ColourDisplayBIG.ImageColor3.B* 200) )
+        end)
 	end)
 
 	RESETALL.MouseButton1Click:Connect(function()
-		closePalette()
+		COLORPALLETE.Visible = false
 	end)
 	local buttonDown = false
 	local movingSlider = false
