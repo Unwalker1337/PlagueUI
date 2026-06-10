@@ -2655,10 +2655,35 @@ function library:UpdateTheme(props)
 	pcall(function()
 		if props.SectionBg then
 			for _, v in pairs(PCR_1:GetDescendants()) do
-				if v.Name == "Section" or v.Name == "SECTIONCOLOUR" or v.Name == "Z_Holder" then
-					if v:IsA("Frame") then
-						pcall(function() TweenService:Create(v, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.SectionBg}):Play() end)
-					end
+				if (v.Name == "Section" or v.Name == "SECTIONCOLOUR" or v.Name == "Z_Holder" or v.Name == "SECTIONHOLDER" or v.Name == "TemplateButton") and v:IsA("Frame") then
+					pcall(function() TweenService:Create(v, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.SectionBg}):Play() end)
+				end
+			end
+		end
+	end)
+	pcall(function()
+		if props.InnerBg then
+			for _, v in pairs(PCR_1:GetDescendants()) do
+				if v.Name == "HOLDER" and v:IsA("Frame") then
+					v.BackgroundColor3 = library.theme.InnerBg
+				end
+			end
+		end
+	end)
+	pcall(function()
+		if props.TextPrimary then
+			for _, v in pairs(PCR_1:GetDescendants()) do
+				if v:IsA("TextLabel") and v.TextColor3 == Color3.fromRGB(221, 221, 221) then
+					v.TextColor3 = library.theme.TextPrimary
+				end
+			end
+		end
+	end)
+	pcall(function()
+		if props.TextSecondary then
+			for _, v in pairs(PCR_1:GetDescendants()) do
+				if v:IsA("TextLabel") and v.TextColor3 == Color3.fromRGB(197, 197, 197) then
+					v.TextColor3 = library.theme.TextSecondary
 				end
 			end
 		end
