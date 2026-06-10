@@ -190,6 +190,18 @@ end
 
 function OpenedColor(text,ColourDisplay,Action,def)
 
+	local paletteOverlay = Instance.new("TextButton")
+	paletteOverlay.Name = "PaletteOverlay"
+	paletteOverlay.Parent = PCR_1
+	paletteOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	paletteOverlay.BackgroundTransparency = 0.5
+	paletteOverlay.BorderSizePixel = 0
+	paletteOverlay.Size = UDim2.new(1, 0, 1, 0)
+	paletteOverlay.ZIndex = 998
+	paletteOverlay.AutoButtonColor = false
+	paletteOverlay.Text = ""
+	paletteOverlay.Visible = false
+
 	local COLORPALLETE = Instance.new("Frame")
 	local PaletteCorner = Instance.new("UICorner")
 	local Holder = Instance.new("Frame")
@@ -260,18 +272,22 @@ function OpenedColor(text,ColourDisplay,Action,def)
 
 	BG.Name = "BG"
 	BG.Parent = Holder
-	BG.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+	BG.BackgroundColor3 = Color3.fromRGB(22, 22, 25)
 	BG.BorderSizePixel = 0
 	BG.Position = UDim2.new(0, 0, 0.142, 0)
 	BG.Size = UDim2.new(1, 0, 0, 139)
 
 	S12.Name = "S12"
 	S12.Parent = BG
-	S12.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+	S12.BackgroundColor3 = Color3.fromRGB(26, 26, 30)
 	S12.BorderSizePixel = 0
 	S12.Position = UDim2.new(0, 12, 0, 8)
 	S12.Size = UDim2.new(0, 156, 0, 113)
 	S12.ZIndex = 23
+
+	local S12Corner = Instance.new("UICorner")
+	S12Corner.CornerRadius = UDim.new(0, 6)
+	S12Corner.Parent = S12
 
 	ColourWheel.Name = "ColourWheel"
 	ColourWheel.Parent = S12
@@ -342,7 +358,7 @@ function OpenedColor(text,ColourDisplay,Action,def)
 
 	S13.Name = "S13"
 	S13.Parent = BG
-	S13.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+	S13.BackgroundColor3 = Color3.fromRGB(26, 26, 30)
 	S13.BorderSizePixel = 0
 	S13.Position = UDim2.new(0, 178, 0, 8)
 	S13.Size = UDim2.new(0, 90, 0, 113)
@@ -357,8 +373,8 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	ColourDisplayBIG.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ColourDisplayBIG.BackgroundTransparency = 1.000
 	ColourDisplayBIG.BorderSizePixel = 0
-	ColourDisplayBIG.Position = UDim2.new(0.18, 0, 0.12, 0)
-	ColourDisplayBIG.Size = UDim2.new(0.64, 0, 0.52, 0)
+	ColourDisplayBIG.Position = UDim2.new(0.15, 0, 0.1, 0)
+	ColourDisplayBIG.Size = UDim2.new(0.7, 0, 0.54, 0)
 	ColourDisplayBIG.ZIndex = 25
 	ColourDisplayBIG.Image = "rbxassetid://3570695787"
 	ColourDisplayBIG.ScaleType = Enum.ScaleType.Slice
@@ -366,20 +382,51 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	ColourDisplayBIG.SliceScale = 0.120
 
 	local DisplayCorner = Instance.new("UICorner")
-	DisplayCorner.CornerRadius = UDim.new(0, 6)
+	DisplayCorner.CornerRadius = UDim.new(0, 8)
 	DisplayCorner.Parent = ColourDisplayBIG
 
-	SETCOLOR.Name = "SETCOLOR"
-	SETCOLOR.Parent = S13
-	SETCOLOR.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	SETCOLOR.BackgroundTransparency = 1.000
-	SETCOLOR.BorderSizePixel = 0
-	SETCOLOR.Position = UDim2.new(0.18, 0, 0.69, 0)
-	SETCOLOR.Size = UDim2.new(0, 16, 0, 16)
-	SETCOLOR.ZIndex = 23
-	SETCOLOR.Image = "rbxassetid://1489284025"
+	local buttonFrame = Instance.new("Frame")
+	buttonFrame.Name = "ButtonFrame"
+	buttonFrame.Parent = S13
+	buttonFrame.BackgroundTransparency = 1
+	buttonFrame.BorderSizePixel = 0
+	buttonFrame.Position = UDim2.new(0.1, 0, 0.68, 0)
+	buttonFrame.Size = UDim2.new(0.8, 0, 0, 28)
+	buttonFrame.ZIndex = 23
 
-	RESETALL.Position = UDim2.new(0.53, 0, 0.69, 0)
+	local UILG = Instance.new("UIListLayout")
+	UILG.Parent = buttonFrame
+	UILG.FillDirection = Enum.FillDirection.Horizontal
+	UILG.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UILG.VerticalAlignment = Enum.VerticalAlignment.Center
+	UILG.SortOrder = Enum.SortOrder.LayoutOrder
+	UILG.Padding = UDim.new(0, 8)
+
+	SETCOLOR.Name = "SETCOLOR"
+	SETCOLOR.Parent = buttonFrame
+	SETCOLOR.BackgroundColor3 = library.theme.Accent
+	SETCOLOR.BackgroundTransparency = 0.85
+	SETCOLOR.BorderSizePixel = 0
+	SETCOLOR.Size = UDim2.new(0, 28, 0, 22)
+	SETCOLOR.ZIndex = 24
+	SETCOLOR.Image = "rbxassetid://1489284025"
+	SETCOLOR.ImageColor3 = Color3.fromRGB(200, 200, 200)
+
+	local setBtnCorner = Instance.new("UICorner")
+	setBtnCorner.CornerRadius = UDim.new(0, 4)
+	setBtnCorner.Parent = SETCOLOR
+
+	RESETALL.Parent = buttonFrame
+	RESETALL.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+	RESETALL.BackgroundTransparency = 0.85
+	RESETALL.BorderSizePixel = 0
+	RESETALL.Size = UDim2.new(0, 28, 0, 22)
+	RESETALL.ZIndex = 24
+	RESETALL.ImageColor3 = Color3.fromRGB(200, 200, 200)
+
+	local resetBtnCorner = Instance.new("UICorner")
+	resetBtnCorner.CornerRadius = UDim.new(0, 4)
+	resetBtnCorner.Parent = RESETALL
 
 	Upper.Name = "Upper"
 	Upper.Parent = Holder
@@ -412,22 +459,48 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	linedecoupper.Size = UDim2.new(0.96, 0, 0, 1)
 	linedecoupper.ZIndex = 3
 
+	paletteOverlay.Visible = true
+	TweenService:Create(paletteOverlay, TweenInfo.new(0.2), {BackgroundTransparency = 0.5}):Play()
+
 	COLORPALLETE.Visible = true
 	Holder.Visible = true
+	COLORPALLETE.BackgroundTransparency = 1
+	COLORPALLETE.Size = UDim2.new(0, 1, 0, 1)
+
+	TweenService:Create(COLORPALLETE, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		BackgroundTransparency = 0,
+		Size = UDim2.new(0, 280, 0, 162)
+	}):Play()
+	TweenService:Create(PaletteShadow, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0.4}):Play()
+
+	paletteOverlay.MouseButton1Click:Connect(function()
+		closePalette()
+	end)
 
 	local hsv;
 
-	SETCOLOR.MouseButton1Click:Connect(function()
-		ColourDisplay.ImageColor3 = ColourDisplayBIG.ImageColor3
+	local function closePalette(callback)
+		TweenService:Create(COLORPALLETE, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+			BackgroundTransparency = 1,
+			Size = UDim2.new(0, 1, 0, 1)
+		}):Play()
+		TweenService:Create(PaletteShadow, TweenInfo.new(0.25), {ImageTransparency = 1}):Play()
+		TweenService:Create(paletteOverlay, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+		task.wait(0.25)
 		COLORPALLETE.Visible = false
+		paletteOverlay.Visible = false
+		if callback then pcall(callback) end
+	end
 
-		pcall(function()
-            Action( Color3.fromRGB(ColourDisplayBIG.ImageColor3.R * 200 ,ColourDisplayBIG.ImageColor3.G * 200 ,ColourDisplayBIG.ImageColor3.B* 200) )
-        end)
+	SETCOLOR.MouseButton1Click:Connect(function()
+		closePalette(function()
+			ColourDisplay.ImageColor3 = ColourDisplayBIG.ImageColor3
+			Action(Color3.fromRGB(ColourDisplayBIG.ImageColor3.R * 200, ColourDisplayBIG.ImageColor3.G * 200, ColourDisplayBIG.ImageColor3.B * 200))
+		end)
 	end)
 
 	RESETALL.MouseButton1Click:Connect(function()
-		COLORPALLETE.Visible = false
+		closePalette()
 	end)
 	local buttonDown = false
 	local movingSlider = false
@@ -2367,47 +2440,60 @@ function library:Notify(config)
 	local notif = Instance.new("Frame")
 	notif.Name = "Notification"
 	notif.Parent = notificationHolder
-	notif.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+	notif.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+	notif.BackgroundTransparency = 0.15
 	notif.BorderSizePixel = 0
-	notif.Size = UDim2.new(0, 320, 0, 0)
+	notif.Size = UDim2.new(0, 340, 0, 0)
 	notif.ZIndex = 201
 	notif.ClipsDescendants = true
 
 	local notifCorner = Instance.new("UICorner")
-	notifCorner.CornerRadius = UDim.new(0, 8)
+	notifCorner.CornerRadius = UDim.new(0, 10)
 	notifCorner.Parent = notif
 
 	local notifStroke = Instance.new("UIStroke")
 	notifStroke.Color = Color3.fromRGB(255, 255, 255)
-	notifStroke.Transparency = 0.92
+	notifStroke.Transparency = 0.88
 	notifStroke.Thickness = 1
 	notifStroke.Parent = notif
 
-	local accentBar = Instance.new("Frame")
-	accentBar.Name = "AccentBar"
-	accentBar.Parent = notif
-	accentBar.BackgroundColor3 = library.theme.Accent
-	accentBar.BorderSizePixel = 0
-	accentBar.Position = UDim2.new(0, 0, 0, 0)
-	accentBar.Size = UDim2.new(0, 4, 0, 0)
-	accentBar.ZIndex = 202
+	local notifShadow = Instance.new("ImageLabel")
+	notifShadow.Name = "NotifShadow"
+	notifShadow.Parent = notif
+	notifShadow.BackgroundTransparency = 1
+	notifShadow.BorderSizePixel = 0
+	notifShadow.Position = UDim2.new(0, -8, 0, -8)
+	notifShadow.Size = UDim2.new(1, 16, 1, 16)
+	notifShadow.ZIndex = -1
+	notifShadow.Image = "rbxassetid://1316045217"
+	notifShadow.ImageColor3 = Color3.new(0, 0, 0)
+	notifShadow.ImageTransparency = 0.5
+	notifShadow.ScaleType = Enum.ScaleType.Slice
+	notifShadow.SliceCenter = Rect.new(10, 10, 10, 10)
 
-	local accentCorner = Instance.new("UICorner")
-	accentCorner.CornerRadius = UDim.new(0, 4)
-	accentCorner.Parent = accentBar
+	local iconLabel = Instance.new("ImageLabel")
+	iconLabel.Name = "Icon"
+	iconLabel.Parent = notif
+	iconLabel.BackgroundTransparency = 1
+	iconLabel.BorderSizePixel = 0
+	iconLabel.Position = UDim2.new(0, 14, 0, 14)
+	iconLabel.Size = UDim2.new(0, 20, 0, 20)
+	iconLabel.ZIndex = 203
+	iconLabel.Image = "rbxassetid://3944680095"
+	iconLabel.ImageColor3 = library.theme.Accent
 
 	local titleLabel = Instance.new("TextLabel")
 	titleLabel.Name = "Title"
 	titleLabel.Parent = notif
 	titleLabel.BackgroundTransparency = 1
 	titleLabel.BorderSizePixel = 0
-	titleLabel.Position = UDim2.new(0, 16, 0, 10)
-	titleLabel.Size = UDim2.new(1, -24, 0, 18)
+	titleLabel.Position = UDim2.new(0, 44, 0, 12)
+	titleLabel.Size = UDim2.new(1, -56, 0, 20)
 	titleLabel.ZIndex = 203
 	titleLabel.Font = Enum.Font.SourceSansSemibold
 	titleLabel.Text = title
-	titleLabel.TextColor3 = Color3.fromRGB(221, 221, 221)
-	titleLabel.TextSize = 15
+	titleLabel.TextColor3 = Color3.fromRGB(235, 235, 235)
+	titleLabel.TextSize = 16
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 	local textLabel = Instance.new("TextLabel")
@@ -2415,25 +2501,56 @@ function library:Notify(config)
 	textLabel.Parent = notif
 	textLabel.BackgroundTransparency = 1
 	textLabel.BorderSizePixel = 0
-	textLabel.Position = UDim2.new(0, 16, 0, 30)
-	textLabel.Size = UDim2.new(1, -24, 0, 16)
+	textLabel.Position = UDim2.new(0, 44, 0, 34)
+	textLabel.Size = UDim2.new(1, -56, 0, 18)
 	textLabel.ZIndex = 203
 	textLabel.Font = Enum.Font.SourceSans
 	textLabel.Text = text
-	textLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
+	textLabel.TextColor3 = Color3.fromRGB(175, 175, 180)
 	textLabel.TextSize = 14
 	textLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-	local contentH = 50
-	notif.Size = UDim2.new(0, 320, 0, contentH)
-	accentBar.Size = UDim2.new(0, 4, 0, contentH)
+	local progressBarBg = Instance.new("Frame")
+	progressBarBg.Name = "ProgressBarBg"
+	progressBarBg.Parent = notif
+	progressBarBg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	progressBarBg.BackgroundTransparency = 0.93
+	progressBarBg.BorderSizePixel = 0
+	progressBarBg.Position = UDim2.new(0, 12, 1, -6)
+	progressBarBg.Size = UDim2.new(1, -24, 0, 3)
+	progressBarBg.ZIndex = 203
+
+	local progressBgCorner = Instance.new("UICorner")
+	progressBgCorner.CornerRadius = UDim.new(0, 2)
+	progressBgCorner.Parent = progressBarBg
+
+	local progressBar = Instance.new("Frame")
+	progressBar.Name = "ProgressBar"
+	progressBar.Parent = progressBarBg
+	progressBar.BackgroundColor3 = library.theme.Accent
+	progressBar.BorderSizePixel = 0
+	progressBar.Size = UDim2.new(1, 0, 1, 0)
+	progressBar.ZIndex = 204
+
+	local progressCorner = Instance.new("UICorner")
+	progressCorner.CornerRadius = UDim.new(0, 2)
+	progressCorner.Parent = progressBar
+
+	local contentH = 62
+	notif.Size = UDim2.new(0, 340, 0, contentH)
+	notif.Position = UDim2.new(0, 0, 0, -(contentH + notifSpacing) * (#notificationHolder:GetChildren()))
+	notif.BackgroundTransparency = 1
+
+	TweenService:Create(notif, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.15}):Play()
+	TweenService:Create(notifShadow, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0.5}):Play()
 
 	local function shiftAll()
 		local y = 0
 		for _, child in pairs(notificationHolder:GetChildren()) do
 			if child:IsA("Frame") then
-				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
-				y = y + child.AbsoluteSize.Y + notifSpacing
+				child.Size = UDim2.new(0, 340, 0, contentH)
+				TweenService:Create(child, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
+				y = y + contentH + notifSpacing
 			end
 		end
 	end
@@ -2443,14 +2560,19 @@ function library:Notify(config)
 	spawn(function()
 		local elapsed = 0
 		while notif.Parent do
-			elapsed = elapsed + 0.1
-			wait(0.1)
+			wait(0.05)
+			elapsed = elapsed + 0.05
+			progressBar.Size = UDim2.new(1 - (elapsed / duration), 0, 1, 0)
 			if elapsed >= duration then
-				TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1, Size = UDim2.new(0, 320, 0, 0)}):Play()
-				TweenService:Create(accentBar, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+				TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1, Size = UDim2.new(0, 340, 0, 0)}):Play()
+				TweenService:Create(notifShadow, TweenInfo.new(0.3), {ImageTransparency = 1}):Play()
+				TweenService:Create(progressBarBg, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
 				for _, v in pairs(notif:GetChildren()) do
 					if v:IsA("TextLabel") then
 						TweenService:Create(v, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+					end
+					if v:IsA("ImageLabel") and v.Name == "Icon" then
+						TweenService:Create(v, TweenInfo.new(0.3), {ImageTransparency = 1}):Play()
 					end
 				end
 				wait(0.35)
