@@ -1202,7 +1202,7 @@ function library:AddWindow(text)
 
 		F_line.Name = "F_line"
 		F_line.Parent = Section
-		F_line.BackgroundColor3 = Color3.fromRGB(91, 133, 197)
+		F_line.BackgroundColor3 = library.theme.Accent
 		F_line.BorderSizePixel = 0
 		F_line.Position = UDim2.new(0, 0, 0.1, 0)
 		F_line.Size = UDim2.new(1, 0, 0, 1)
@@ -2329,6 +2329,11 @@ function library:UpdateTheme(props)
 				cp.AccentBar.BackgroundColor3 = library.theme.Accent
 			end
 		end
+		for _, v in pairs(limit1:GetDescendants()) do
+			if v.Name == "F_line" and v:IsA("Frame") then
+				v.BackgroundColor3 = library.theme.Accent
+			end
+		end
 	end
 	if props.MainBg then
 		MAIN.BackgroundColor3 = library.theme.MainBg
@@ -2653,22 +2658,45 @@ library.ThemeManager = {} do
 		for name, _ in pairs(TM.BuiltInThemes) do
 			table.insert(themeNames, name)
 		end
-		section:AddDropdown("Theme", themeNames, themeNames[1], function(v) TM:ApplyTheme(v) end)
+		section:AddDropdown("Select Preset", themeNames, themeNames[1], function(v) TM:ApplyTheme(v) end)
 		section:AddSeparateBar()
 		section:AddLabel("Custom Themes")
-		section:AddTextBox("Theme Name", "Enter name", false, 5, function() end)
-		section:AddButton("Save Current Theme", function()
-			local textbox = library.registry.textboxes["Theme Name"]
-			local name = textbox and textbox.obj5.Text or "MyTheme"
+		section:AddTextBox("Custom Theme Name", "Enter name", false, 5, function() end)
+		section:AddDropdown("Custom Theme List", TM:GetCustomThemeList(), nil, function(v) end)
+		section:AddButton("Save Custom Theme", function()
+			local tb = library.registry.textboxes["Custom Theme Name"]
+			local name = tb and tb.obj5.Text or "MyTheme"
 			TM:SaveCustomTheme(name)
-		end)
-		section:AddButton("Load Custom Theme", function()
 			local list = TM:GetCustomThemeList()
 			if #list > 0 then
-				TM:LoadCustomTheme(list[1] .. ".json")
+				library.registry.dropdowns["Custom Theme List"].Value = name
 			end
 		end)
-		section:AddButton("Refresh List", function() end)
+		section:AddButton("Load Custom Theme", function()
+			local dd = library.registry.dropdowns["Custom Theme List"]
+			if dd and dd.Value then
+				TM:LoadCustomTheme(dd.Value .. ".json")
+			end
+		end)
+		section:AddSeparateBar()
+		section:AddButton("Set Autoload Theme", function()
+			local dd = library.registry.dropdowns["Custom Theme List"]
+			if dd and dd.Value then
+				writefile(TM.Folder .. "/autoload.txt", dd.Value)
+				library:Notify({title = "Theme", text = "Autoload set to " .. dd.Value, duration = 2})
+			end
+		end)
+		section:AddButton("Remove Autoload Theme", function()
+			local path = TM.Folder .. "/autoload.txt"
+			if isfile(path) then delfile(path)
+				library:Notify({title = "Theme", text = "Autoload removed", duration = 2})
+			end
+		end)
+		if isfile(TM.Folder .. "/autoload.txt") then
+			section:AddLabel("Autoload: " .. readfile(TM.Folder .. "/autoload.txt"))
+		else
+			section:AddLabel("No autoload set")
+		end
 	end
 end
 
@@ -2731,16 +2759,17 @@ library.ConfigManager = {} do
 	end
 
 	function CM:ApplyToGroupbox(section)
-		section:AddTextBox("Config Name", "Enter config name", false, 5, function() end)
-		section:AddButton("Save Config", function()
-			local textbox = library.registry.textboxes["Config Name"]
-			local name = textbox and textbox.obj5.Text or "Config"
+		section:AddTextBox("Config Name", "Enter name", false, 5, function() end)
+		section:AddButton("Create Config", function()
+			local tb = library.registry.textboxes["Config Name"]
+			local name = tb and tb.obj5.Text or "Config"
 			CM:Save(name)
 			local list = CM:GetConfigList()
 			if #list > 0 then
-				library.registry.dropdowns["Config List"].Value = list[1]
+				library.registry.dropdowns["Config List"].Value = name
 			end
 		end)
+		section:AddSeparateBar()
 		section:AddDropdown("Config List", CM:GetConfigList(), nil, function(v) end)
 		section:AddButton("Load Selected", function()
 			local dd = library.registry.dropdowns["Config List"]
@@ -2764,8 +2793,7 @@ library.ConfigManager = {} do
 			end
 		end)
 		if isfile(CM.Folder .. "/settings/autoload.txt") then
-			local autoload = readfile(CM.Folder .. "/settings/autoload.txt")
-			section:AddLabel("Autoload: " .. autoload)
+			section:AddLabel("Autoload: " .. readfile(CM.Folder .. "/settings/autoload.txt"))
 		else
 			section:AddLabel("No autoload set")
 		end
@@ -2774,6 +2802,10 @@ end
 
 spawn(function()
 	wait(1)
+	if isfile(TM.Folder .. "/autoload.txt") then
+		local name = readfile(TM.Folder .. "/autoload.txt")
+		TM:LoadCustomTheme(name .. ".json")
+	end
 	if isfile(CM.Folder .. "/settings/autoload.txt") then
 		local name = readfile(CM.Folder .. "/settings/autoload.txt")
 		CM:Load(name .. ".json")
