@@ -162,11 +162,4 @@ miscSection2:AddTextBox('Watermark Text', 'Enter text', true, 5, function(t)
 end)
 miscSection2:AddSeparateBar()
 
--- Info
-local miscSection3 = Misc:AddSection('Info')
-miscSection3:AddLabel('FPS: shown in top-right corner')
-miscSection3:AddLabel('Use RightControl to toggle GUI')
-miscSection3:AddLabel('Settings tab has Theme & Config managers')
-
--- Init: show a default tab
 library:Init('Misc')
