@@ -1930,10 +1930,11 @@ function library:AddWindow(text)
 			end
 			library.registry.colorpickers[Text] = {Type = "ColorPicker", Text = Text, textKey = textKey, ColourDisplay = ColourDisplay, Color = Color, Action = Action}
 		end
-		function inside:AddKeyBind(Text,KeyCode,Action)
+		function inside:AddKeyBind(Text, KeyCode, Action)
 			Text = Text or 'Not Defined'
 			KeyCode = KeyCode or Enum.KeyCode.RightAlt
 			Action = Action or function() end
+			local mode = "Toggle"
 
 			local TemplateKBIND = Instance.new("Frame")
 			local TextLabel = Instance.new("TextLabel")
@@ -1955,7 +1956,7 @@ function library:AddWindow(text)
 			TextLabel.BackgroundTransparency = 1.000
 			TextLabel.BorderSizePixel = 0
 			TextLabel.Position = UDim2.new(-0.0121270986, 0, 0.0133694736, 0)
-			TextLabel.Size = UDim2.new(0, 242, 0, 15)
+			TextLabel.Size = UDim2.new(0, 200, 0, 15)
 			TextLabel.ZIndex = 15
 			TextLabel.Font = Enum.Font.SourceSansBold
 			TextLabel.Text = Text
@@ -1996,36 +1997,143 @@ function library:AddWindow(text)
 			h5.Name = "h5"
 			h5.Parent = KeyButton
 
+			-- Mode popup
+			local modePopup = Instance.new("Frame")
+			modePopup.Name = "ModePopup"
+			modePopup.Parent = PCR_1
+			modePopup.BackgroundColor3 = Color3.fromRGB(20, 20, 23)
+			modePopup.BorderSizePixel = 0
+			modePopup.Size = UDim2.new(0, 90, 0, 0)
+			modePopup.ZIndex = 999
+			modePopup.Visible = false
+			modePopup.ClipsDescendants = true
 
-			local ischanging = false;
-			game:GetService("UserInputService").InputBegan:connect(function(a, gp) 
-				if not gp then 
-					if (a.KeyCode.Name == KeyCode or a.KeyCode.Name == KeyCode.Name) and ischanging == false then 
-						pcall(function()
-							Action(a.KeyCode)
-						end)
+			local popupCorner = Instance.new("UICorner")
+			popupCorner.CornerRadius = UDim.new(0, 6)
+			popupCorner.Parent = modePopup
+
+			local popupStroke = Instance.new("UIStroke")
+			popupStroke.Color = Color3.fromRGB(255, 255, 255)
+			popupStroke.Transparency = 0.92
+			popupStroke.Thickness = 1
+			popupStroke.Parent = modePopup
+
+			local popupLayout = Instance.new("UIListLayout")
+			popupLayout.Parent = modePopup
+			popupLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			popupLayout.Padding = UDim.new(0, 2)
+			popupLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+			local popupPadding = Instance.new("UIPadding")
+			popupPadding.Parent = modePopup
+			popupPadding.PaddingTop = UDim.new(0, 4)
+			popupPadding.PaddingBottom = UDim.new(0, 4)
+
+			local function createModeOption(txt)
+				local btn = Instance.new("TextButton")
+				btn.Parent = modePopup
+				btn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+				btn.BorderSizePixel = 0
+				btn.Size = UDim2.new(0, 82, 0, 20)
+				btn.ZIndex = 1000
+				btn.AutoButtonColor = false
+				btn.Font = Enum.Font.SourceSansSemibold
+				btn.Text = txt
+				btn.TextColor3 = Color3.fromRGB(180, 180, 180)
+				btn.TextSize = 13
+				return btn
+			end
+
+			local toggleBtn = createModeOption("Toggle")
+			local holdBtn = createModeOption("Hold")
+
+			local function closePopup()
+				modePopup.Visible = false
+			end
+
+			toggleBtn.MouseButton1Click:Connect(function()
+				mode = "Toggle"
+				toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+				holdBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+				closePopup()
+			end)
+			holdBtn.MouseButton1Click:Connect(function()
+				mode = "Hold"
+				holdBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+				toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+				closePopup()
+			end)
+
+			if mode == "Toggle" then toggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 45) end
+
+			local ischanging = false
+			local held = false
+
+			local function onKeyPress()
+				if mode == "Toggle" then
+					pcall(function() Action(KeyCode) end)
+				else
+					held = not held
+					pcall(function() Action(held and KeyCode or nil) end)
+				end
+			end
+
+			game:GetService("UserInputService").InputBegan:connect(function(a, gp)
+				if not gp and not ischanging then
+					if a.KeyCode == KeyCode then
+						if mode == "Hold" then
+							held = true
+							pcall(function() Action(KeyCode) end)
+						else
+							onKeyPress()
+						end
 					end
 				end
 			end)
 
-			KeyButton.MouseButton1Click:connect(function() 
-				game.TweenService:Create(KeyButton, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+			game:GetService("UserInputService").InputEnded:connect(function(a, gp)
+				if not gp and mode == "Hold" and a.KeyCode == KeyCode then
+					held = false
+					pcall(function() Action(nil) end)
+				end
+			end)
+
+			KeyButton.MouseButton1Click:connect(function()
+				TweenService:Create(KeyButton, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
 					BackgroundColor3 = Color3.fromRGB(34, 34, 34)
 				}):Play()
 				KeyButton.Text = ". . ."
-				KeyButton:TweenSize(UDim2.new(0,getsize(KeyButton.Text),0,13), "InOut", "Quint", 0.2, true)
-
-				local v1, v2 = game:GetService('UserInputService').InputBegan:wait();
+				KeyButton:TweenSize(UDim2.new(0, getsize(KeyButton.Text), 0, 13), "InOut", "Quint", 0.2, true)
+				local v1, v2 = game:GetService('UserInputService').InputBegan:wait()
 				if v1.KeyCode.Name ~= "Unknown" then
 					ischanging = true
-					game.TweenService:Create(KeyButton, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
+					TweenService:Create(KeyButton, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), {
 						BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 					}):Play()
-					KeyButton:TweenSize(UDim2.new(0,getsize( v1.KeyCode.Name),0,13), "Out", "Quint", 0.3, true)
+					KeyButton:TweenSize(UDim2.new(0, getsize(v1.KeyCode.Name), 0, 13), "Out", "Quint", 0.3, true)
 					KeyButton.Text = v1.KeyCode.Name
-					KeyCode = v1.KeyCode.Name;
-					wait(.2)
+					KeyCode = v1.KeyCode
+					wait(0.2)
 					ischanging = false
+				end
+			end)
+
+			KeyButton.MouseButton2Click:Connect(function()
+				local absPos = KeyButton.AbsolutePosition
+				modePopup.Position = UDim2.new(0, absPos.X - 22, 0, absPos.Y + KeyButton.AbsoluteSize.Y + 4)
+				modePopup.Size = UDim2.new(0, 90, 0, 48)
+				modePopup.Visible = true
+				modePopup.ZIndex = 999
+			end)
+
+			uis.InputBegan:Connect(function(input)
+				if modePopup.Visible and input.UserInputType == Enum.UserInputType.MouseButton1 then
+					local mPos = Vector2.new(input.Position.X, input.Position.Y)
+					local popupAbs = modePopup.AbsolutePosition
+					local popupSize = modePopup.AbsoluteSize
+					if mPos.X < popupAbs.X or mPos.X > popupAbs.X + popupSize.X or mPos.Y < popupAbs.Y or mPos.Y > popupAbs.Y + popupSize.Y then
+						closePopup()
+					end
 				end
 			end)
 
