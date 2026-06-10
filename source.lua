@@ -2883,7 +2883,7 @@ function library:CreateSettings(winName)
 	sec2:AddButton('Test Notification', function()
 		library:Notify({title = 'Test', text = 'This is a test notification', duration = 3})
 	end)
-	local sec3 = win:AddSection('GUI Settings')
+	local sec3 = win:AddSection('GUI Toggle')
 	sec3:AddKeyBind('Toggle GUI', Enum.KeyCode.RightControl, function()
 		guiVisible = not guiVisible
 		MAIN.Visible = guiVisible
