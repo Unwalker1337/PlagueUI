@@ -2943,6 +2943,11 @@ function library:CreateSettings(winName)
 		guiVisible = not guiVisible
 		MAIN.Visible = guiVisible
 	end)
+	sec3:AddSeparateBar()
+	sec3:AddButton('Unload Script', function()
+		PCR_1:Destroy()
+		library = nil
+	end)
 	local sec3b = win:AddSection('Theme Manager')
 	library.ThemeManager:ApplyToGroupbox(sec3b)
 	local sec4 = win:AddSection('Config Manager')
