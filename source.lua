@@ -905,6 +905,8 @@ function library:AddWatermark(Text)
 	obj4.TextSize = 14
 	obj4.TextXAlignment = Enum.TextXAlignment.Left
 
+	draggable(obj1)
+
 	function intern:ChangeText(text)
 		local newSize = math.max(#text * 7, 20)
 		obj4.Text = text
