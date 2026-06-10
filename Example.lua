@@ -1,4 +1,4 @@
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/oShyyyyy/Plaguecheat.cc-Roblox-Ui-library/main/Source.lua", true))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Unwalker1337/PlagueUI/main/source.lua", true))()
 
 
 local Legit = library:AddWindow('Legit')
@@ -89,7 +89,7 @@ e:AddDropdown('Testing Dropdown',{'opt1','opt2','opt3'},'opt2',function(a) print
 
 
 -- For watermark stuff 
-te:UpdateValue(true)
+-- te:UpdateValue(true)
 local ms = library.ms or 'hehe wha'
 
 spawn(function()
