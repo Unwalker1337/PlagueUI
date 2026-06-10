@@ -2715,16 +2715,49 @@ library.ConfigManager = {} do
 			local textbox = library.registry.textboxes["Config Name"]
 			local name = textbox and textbox.obj5.Text or "Config"
 			CM:Save(name)
-		end)
-		section:AddButton("Load Config", function()
 			local list = CM:GetConfigList()
 			if #list > 0 then
-				CM:Load(list[1] .. ".json")
+				library.registry.dropdowns["Config List"].Value = list[1]
 			end
 		end)
-		section:AddButton("Refresh List", function() end)
+		section:AddDropdown("Config List", CM:GetConfigList(), nil, function(v) end)
+		section:AddButton("Load Selected", function()
+			local dd = library.registry.dropdowns["Config List"]
+			if dd and dd.Value then
+				CM:Load(dd.Value .. ".json")
+			end
+		end)
+		section:AddSeparateBar()
+		section:AddButton("Set Autoload", function()
+			local dd = library.registry.dropdowns["Config List"]
+			if dd and dd.Value then
+				writefile(CM.Folder .. "/settings/autoload.txt", dd.Value)
+				library:Notify({title = "Config", text = "Autoload set to " .. dd.Value, duration = 2})
+			end
+		end)
+		section:AddButton("Remove Autoload", function()
+			local path = CM.Folder .. "/settings/autoload.txt"
+			if isfile(path) then
+				delfile(path)
+				library:Notify({title = "Config", text = "Autoload removed", duration = 2})
+			end
+		end)
+		if isfile(CM.Folder .. "/settings/autoload.txt") then
+			local autoload = readfile(CM.Folder .. "/settings/autoload.txt")
+			section:AddLabel("Autoload: " .. autoload)
+		else
+			section:AddLabel("No autoload set")
+		end
 	end
 end
+
+spawn(function()
+	wait(1)
+	if isfile(CM.Folder .. "/settings/autoload.txt") then
+		local name = readfile(CM.Folder .. "/settings/autoload.txt")
+		CM:Load(name .. ".json")
+	end
+end)
 
 library.GUI = PCR_1
 
