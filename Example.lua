@@ -129,9 +129,6 @@ end)
 
 local miscSection2 = Misc:AddSection('Settings')
 miscSection2:AddLabel('Customize your GUI')
-miscSection2:AddKeyBind('Toggle Menu', Enum.KeyCode.RightControl, function()
-    library:Notify({title = 'Menu', text = 'GUI toggled', duration = 2})
-end)
 miscSection2:AddSeparateBar()
 
 -- Notification customization
