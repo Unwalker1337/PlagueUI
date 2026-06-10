@@ -2646,12 +2646,37 @@ function library:Notify(config)
 	local contentH = text ~= "" and 48 or 34
 	notif.Size = UDim2.new(0, 280, 0, contentH)
 	accentBar.Size = UDim2.new(0, 3, 0, contentH)
-	notif.Position = UDim2.new(0, 0, 0, -(contentH + notifSpacing) * (#notificationHolder:GetChildren()))
 	notif.BackgroundTransparency = 1
 	if text == "" then
 		titleLabel.Position = UDim2.new(0, 14, 0, 8)
 		textLabel.Visible = false
 	end
+
+	local isBottom = library.theme.NotifPosition and library.theme.NotifPosition:find("Bottom")
+
+	local function shiftAll()
+		local y = 0
+		local children = {}
+		for _, child in pairs(notificationHolder:GetChildren()) do
+			if child:IsA("Frame") then table.insert(children, child) end
+		end
+		if isBottom then
+			for i = #children, 1, -1 do
+				local child = children[i]
+				local pos = UDim2.new(0, 0, 1, -(y + child.AbsoluteSize.Y))
+				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = pos}):Play()
+				y = y + child.AbsoluteSize.Y + notifSpacing
+			end
+		else
+			for _, child in pairs(children) do
+				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
+				y = y + child.AbsoluteSize.Y + notifSpacing
+			end
+		end
+	end
+
+	notif.Position = isBottom and UDim2.new(0, 0, 1, 10) or UDim2.new(0, 0, 0, -contentH)
+	shiftAll()
 
 	TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
 		BackgroundTransparency = 0
@@ -2659,33 +2684,6 @@ function library:Notify(config)
 	TweenService:Create(accentBar, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
 		Size = UDim2.new(0, 3, 0, contentH)
 	}):Play()
-
-	local isBottom = library.theme.NotifPosition and library.theme.NotifPosition:find("Bottom")
-
-	local function shiftAll()
-		if isBottom then
-			local y = 0
-			local children = {}
-			for _, child in pairs(notificationHolder:GetChildren()) do
-				if child:IsA("Frame") then table.insert(children, child) end
-			end
-			for i = #children, 1, -1 do
-				local child = children[i]
-				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, -y)}):Play()
-				y = y + child.AbsoluteSize.Y + notifSpacing
-			end
-		else
-			local y = 0
-			for _, child in pairs(notificationHolder:GetChildren()) do
-				if child:IsA("Frame") then
-					TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
-					y = y + child.AbsoluteSize.Y + notifSpacing
-				end
-			end
-		end
-	end
-
-	shiftAll()
 
 	spawn(function()
 		local elapsed = 0
