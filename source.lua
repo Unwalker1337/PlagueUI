@@ -190,25 +190,31 @@ end
 
 local activePalette = nil
 local activePaletteTrigger = nil
+local paletteClosing = false
 
 function OpenedColor(text, ColourDisplay, Action, def)
+	if paletteClosing then return end
 	if activePalette then
 		if activePaletteTrigger == ColourDisplay then
+			paletteClosing = true
 			TweenService:Create(activePalette, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 1, 0, 1), BackgroundTransparency = 1}):Play()
 			local shadow = activePalette:FindFirstChild("PaletteShadow")
 			if shadow then TweenService:Create(shadow, TweenInfo.new(0.2), {ImageTransparency = 1}):Play() end
-			task.delay(0.25, function() activePalette.Visible = false end)
-			activePalette = nil
-			activePaletteTrigger = nil
+			task.delay(0.25, function()
+				activePalette.Visible = false
+				activePalette = nil
+				activePaletteTrigger = nil
+				paletteClosing = false
+			end)
 			return
 		else
 			local old = activePalette
+			activePalette = nil
+			activePaletteTrigger = nil
 			TweenService:Create(old, TweenInfo.new(0.15, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 1, 0, 1), BackgroundTransparency = 1}):Play()
 			local shadow = old:FindFirstChild("PaletteShadow")
 			if shadow then TweenService:Create(shadow, TweenInfo.new(0.15), {ImageTransparency = 1}):Play() end
 			task.delay(0.2, function() old.Visible = false end)
-			activePalette = nil
-			activePaletteTrigger = nil
 		end
 	end
 
@@ -1609,6 +1615,7 @@ function library:AddWindow(text)
 			wait()
 			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			UpdateMainSize(nil,true)
+			return TextLabel
 		end
 		local function getsize(str)
 			local r = 0;
@@ -2947,24 +2954,30 @@ library.ThemeManager = {} do
 			end
 		end)
 		section:AddSeparateBar()
+		local autoloadLabel = section:AddLabel("No autoload set")
+		local function refreshAutoloadLabel()
+			if isfile(TM.Folder .. "/autoload.txt") then
+				autoloadLabel.Text = "Autoload: " .. readfile(TM.Folder .. "/autoload.txt")
+			else
+				autoloadLabel.Text = "No autoload set"
+			end
+		end
+		refreshAutoloadLabel()
 		section:AddButton("Set Autoload Theme", function()
 			local dd = library.registry.dropdowns["Custom Theme List"]
 			if dd and dd.Value then
 				writefile(TM.Folder .. "/autoload.txt", dd.Value)
 				library:Notify({title = "Theme", text = "Autoload set to " .. dd.Value, duration = 2})
+				refreshAutoloadLabel()
 			end
 		end)
 		section:AddButton("Remove Autoload Theme", function()
 			local path = TM.Folder .. "/autoload.txt"
 			if isfile(path) then delfile(path)
 				library:Notify({title = "Theme", text = "Autoload removed", duration = 2})
+				refreshAutoloadLabel()
 			end
 		end)
-		if isfile(TM.Folder .. "/autoload.txt") then
-			section:AddLabel("Autoload: " .. readfile(TM.Folder .. "/autoload.txt"))
-		else
-			section:AddLabel("No autoload set")
-		end
 	end
 end
 
@@ -3047,24 +3060,30 @@ library.ConfigManager = {} do
 			end
 		end)
 		section:AddSeparateBar()
+		local autoloadLabel = section:AddLabel("No autoload set")
+		local function refreshAutoloadLabel()
+			if isfile(CM.Folder .. "/settings/autoload.txt") then
+				autoloadLabel.Text = "Autoload: " .. readfile(CM.Folder .. "/settings/autoload.txt")
+			else
+				autoloadLabel.Text = "No autoload set"
+			end
+		end
+		refreshAutoloadLabel()
 		section:AddButton("Set Autoload", function()
 			local dd = library.registry.dropdowns["Config List"]
 			if dd and dd.Value then
 				writefile(CM.Folder .. "/settings/autoload.txt", dd.Value)
 				library:Notify({title = "Config", text = "Autoload set to " .. dd.Value, duration = 2})
+				refreshAutoloadLabel()
 			end
 		end)
 		section:AddButton("Remove Autoload", function()
 			local path = CM.Folder .. "/settings/autoload.txt"
 			if isfile(path) then delfile(path)
 				library:Notify({title = "Config", text = "Autoload removed", duration = 2})
+				refreshAutoloadLabel()
 			end
 		end)
-		if isfile(CM.Folder .. "/settings/autoload.txt") then
-			section:AddLabel("Autoload: " .. readfile(CM.Folder .. "/settings/autoload.txt"))
-		else
-			section:AddLabel("No autoload set")
-		end
 	end
 end
 
