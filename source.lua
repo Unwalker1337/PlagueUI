@@ -1737,7 +1737,7 @@ function library:AddWindow(text)
 			color.Name = "color"
 			color.Parent = TemplateToggle
 			color.AnchorPoint = Vector2.new(0.5, 0.5)
-			color.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			color.BackgroundColor3 = library.theme.ToggleOff or Color3.fromRGB(25, 25, 25)
 			color.BorderSizePixel = 0
 			color.Position = UDim2.new(0.0192536544, 0, 0.386994779, 0)
 			color.Size = UDim2.new(0, 16, 0, 16)
@@ -2535,7 +2535,7 @@ function library:AddWindow(text)
 
 			TemplateButton.Name = "TemplateButton"
 			TemplateButton.Parent = HOLDER_2
-			TemplateButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			TemplateButton.BackgroundColor3 = library.theme.SectionBg or Color3.fromRGB(25, 25, 25)
 			TemplateButton.BorderSizePixel = 0
 			TemplateButton.Position = UDim2.new(0.0430313908, 0, 0, 0)
 			TemplateButton.Size = UDim2.new(0, 243, 0, 21)
@@ -2639,6 +2639,7 @@ library.theme = {
 	TextPrimary = Color3.fromRGB(221, 221, 221),
 	TextSecondary = Color3.fromRGB(152, 152, 152),
 	ToggleOn = Color3.fromRGB(84, 122, 181),
+	ToggleOff = Color3.fromRGB(25, 25, 25),
 	SliderFill = Color3.fromRGB(88, 130, 193),
 	NotifPosition = "TopRight",
 }
