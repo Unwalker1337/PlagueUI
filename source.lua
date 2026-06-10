@@ -1191,7 +1191,7 @@ function library:AddWindow(text)
 		Section.BorderSizePixel = 0
 		Section.ClipsDescendants = true
 		Section.Position = UDim2.new(0.5, 0, 0.5, 0)    
-		Section.Size = UDim2.new(0.96,0,0.94,0)
+		Section.Size = UDim2.new(0.96,0,1,0)
 		Section.ZIndex = 4
 
 		Z_Holder.Name = "Z_Holder"
@@ -1200,7 +1200,7 @@ function library:AddWindow(text)
 		Z_Holder.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
 		Z_Holder.BorderSizePixel = 0
 		Z_Holder.Position = UDim2.new(0.5, 0, 0.5, 0)
-		Z_Holder.Size = UDim2.new(1, 0, 0.96, 0)
+		Z_Holder.Size = UDim2.new(1, 0, 1, 0)
 		Z_Holder.ZIndex = 4
 
 		HOLDER_2.Name = "HOLDER"
