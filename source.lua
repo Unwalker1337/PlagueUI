@@ -2461,12 +2461,27 @@ function library:Notify(config)
 		Size = UDim2.new(0, 3, 0, contentH)
 	}):Play()
 
+	local isBottom = library.theme.NotifPosition and library.theme.NotifPosition:find("Bottom")
+
 	local function shiftAll()
-		local y = 0
-		for _, child in pairs(notificationHolder:GetChildren()) do
-			if child:IsA("Frame") then
-				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
+		if isBottom then
+			local y = 0
+			local children = {}
+			for _, child in pairs(notificationHolder:GetChildren()) do
+				if child:IsA("Frame") then table.insert(children, child) end
+			end
+			for i = #children, 1, -1 do
+				local child = children[i]
+				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, -y)}):Play()
 				y = y + child.AbsoluteSize.Y + notifSpacing
+			end
+		else
+			local y = 0
+			for _, child in pairs(notificationHolder:GetChildren()) do
+				if child:IsA("Frame") then
+					TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
+					y = y + child.AbsoluteSize.Y + notifSpacing
+				end
 			end
 		end
 	end
@@ -2535,10 +2550,16 @@ function library:CreateSettings(winName)
 		library:Notify({title = 'Test', text = 'This is a test notification', duration = 3})
 	end)
 	local sec3 = win:AddSection('GUI Settings')
-	sec3:AddKeyBind('Toggle GUI', Enum.KeyCode.RightControl, function() end)
-	sec:AddSeparateBar()
-	local sec3 = win:AddSection('Theme Manager')
-	library.ThemeManager:ApplyToGroupbox(sec3)
+	sec3:AddKeyBind('Toggle GUI', Enum.KeyCode.RightControl, function()
+		guiVisible = not guiVisible
+		MAIN.Visible = guiVisible
+	end)
+	sec3:AddButton('Toggle GUI', function()
+		guiVisible = not guiVisible
+		MAIN.Visible = guiVisible
+	end)
+	local sec3b = win:AddSection('Theme Manager')
+	library.ThemeManager:ApplyToGroupbox(sec3b)
 	local sec4 = win:AddSection('Config Manager')
 	library.ConfigManager:ApplyToGroupbox(sec4)
 	return win
