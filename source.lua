@@ -188,7 +188,29 @@ end
 
 
 
-function OpenedColor(text,ColourDisplay,Action,def)
+local activePalette = nil
+local activePaletteTrigger = nil
+
+function OpenedColor(text, ColourDisplay, Action, def)
+	if activePalette then
+		if activePaletteTrigger == ColourDisplay then
+			TweenService:Create(activePalette, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 1, 0, 1), BackgroundTransparency = 1}):Play()
+			local shadow = activePalette:FindFirstChild("PaletteShadow")
+			if shadow then TweenService:Create(shadow, TweenInfo.new(0.2), {ImageTransparency = 1}):Play() end
+			task.delay(0.25, function() activePalette.Visible = false end)
+			activePalette = nil
+			activePaletteTrigger = nil
+			return
+		else
+			local old = activePalette
+			TweenService:Create(old, TweenInfo.new(0.15, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 1, 0, 1), BackgroundTransparency = 1}):Play()
+			local shadow = old:FindFirstChild("PaletteShadow")
+			if shadow then TweenService:Create(shadow, TweenInfo.new(0.15), {ImageTransparency = 1}):Play() end
+			task.delay(0.2, function() old.Visible = false end)
+			activePalette = nil
+			activePaletteTrigger = nil
+		end
+	end
 
 	local COLORPALLETE = Instance.new("Frame")
 	local PaletteCorner = Instance.new("UICorner")
@@ -227,11 +249,11 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	COLORPALLETE.Parent = PCR_1
 	COLORPALLETE.AnchorPoint = Vector2.new(0.5, 0.5)
 	COLORPALLETE.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-	COLORPALLETE.BackgroundTransparency = 0
+	COLORPALLETE.BackgroundTransparency = 1
 	COLORPALLETE.BorderSizePixel = 0
 	COLORPALLETE.ClipsDescendants = true
 	COLORPALLETE.Position = UDim2.new(0.5, 0, 0.5, 0)
-	COLORPALLETE.Size = UDim2.new(0, 280, 0, 162)
+	COLORPALLETE.Size = UDim2.new(0, 1, 0, 1)
 	COLORPALLETE.ZIndex = 999
 
 	PaletteCorner.CornerRadius = UDim.new(0, 8)
@@ -247,7 +269,7 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	PaletteShadow.ZIndex = -1
 	PaletteShadow.Image = "rbxassetid://1316045217"
 	PaletteShadow.ImageColor3 = Color3.new(0, 0, 0)
-	PaletteShadow.ImageTransparency = 0.6
+	PaletteShadow.ImageTransparency = 1
 	PaletteShadow.ScaleType = Enum.ScaleType.Slice
 	PaletteShadow.SliceCenter = Rect.new(10, 10, 10, 10)
 
@@ -412,99 +434,87 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	linedecoupper.Size = UDim2.new(0.96, 0, 0, 1)
 	linedecoupper.ZIndex = 3
 
+	activePalette = COLORPALLETE
+	activePaletteTrigger = ColourDisplay
 	COLORPALLETE.Visible = true
 	Holder.Visible = true
+
+	TweenService:Create(COLORPALLETE, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+		Size = UDim2.new(0, 280, 0, 162),
+		BackgroundTransparency = 0
+	}):Play()
+	TweenService:Create(PaletteShadow, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+		ImageTransparency = 0.4
+	}):Play()
+
+	local function closePalette()
+		TweenService:Create(COLORPALLETE, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+			Size = UDim2.new(0, 1, 0, 1),
+			BackgroundTransparency = 1
+		}):Play()
+		TweenService:Create(PaletteShadow, TweenInfo.new(0.2), {ImageTransparency = 1}):Play()
+		task.delay(0.25, function()
+			COLORPALLETE.Visible = false
+			activePalette = nil
+			activePaletteTrigger = nil
+		end)
+	end
 
 	local hsv;
 
 	SETCOLOR.MouseButton1Click:Connect(function()
 		ColourDisplay.ImageColor3 = ColourDisplayBIG.ImageColor3
-		COLORPALLETE.Visible = false
-
+		closePalette()
 		pcall(function()
-            Action( Color3.fromRGB(ColourDisplayBIG.ImageColor3.R * 200 ,ColourDisplayBIG.ImageColor3.G * 200 ,ColourDisplayBIG.ImageColor3.B* 200) )
-        end)
+			Action(Color3.fromRGB(ColourDisplayBIG.ImageColor3.R * 200, ColourDisplayBIG.ImageColor3.G * 200, ColourDisplayBIG.ImageColor3.B * 200))
+		end)
 	end)
 
 	RESETALL.MouseButton1Click:Connect(function()
-		COLORPALLETE.Visible = false
+		closePalette()
 	end)
 	local buttonDown = false
 	local movingSlider = false
 
-
 	local function updateColour(centreOfWheel)
-
 		local colourPickerCentre = Vector2.new(
 			Picker.AbsolutePosition.X + (Picker.AbsoluteSize.X/2),
 			Picker.AbsolutePosition.Y + (Picker.AbsoluteSize.Y/2)
 		)
 		local h = (math.pi - math.atan2(colourPickerCentre.Y - centreOfWheel.Y, colourPickerCentre.X - centreOfWheel.X)) / (math.pi * 2)
-
 		local s = (centreOfWheel - colourPickerCentre).Magnitude / (ColourWheel.AbsoluteSize.X/2)
-
 		local v = math.abs((Slider.AbsolutePosition.Y - DarknessPicker.AbsolutePosition.Y) / DarknessPicker.AbsoluteSize.Y - 1)
-
-
 		hsv = Color3.fromHSV(math.clamp(h, 0, 1), math.clamp(s, 0, 1), math.clamp(v, 0, 1))
-
-
 		ColourDisplayBIG.ImageColor3 = hsv
 		UIGradient.Color = ColorSequence.new{
-			ColorSequenceKeypoint.new(0, hsv), 
+			ColorSequenceKeypoint.new(0, hsv),
 			ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0))
 		}
-
 	end
-
 
 	ColourWheel.MouseButton1Down:Connect(function()
 		buttonDown = true
 	end)
-
 	DarknessPicker.MouseButton1Down:Connect(function()
 		movingSlider = true
 	end)
-
-
 	uis.InputEnded:Connect(function(input)
-
 		if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
-
 		buttonDown = false
 		movingSlider = false
 	end)
-
-
 	uis.InputChanged:Connect(function(input)
-
 		if input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
-
-
 		local mousePos = uis:GetMouseLocation() - Vector2.new(0, game:GetService("GuiService"):GetGuiInset().Y)
-
 		local centreOfWheel = Vector2.new(ColourWheel.AbsolutePosition.X + (ColourWheel.AbsoluteSize.X/2), ColourWheel.AbsolutePosition.Y + (ColourWheel.AbsoluteSize.Y/2))
-
 		local distanceFromWheel = (mousePos - centreOfWheel).Magnitude
-
-
 		if distanceFromWheel <= ColourWheel.AbsoluteSize.X/2 and buttonDown then
-
 			Picker.Position = UDim2.new(0, mousePos.X - ColourWheel.AbsolutePosition.X, 0, mousePos.Y - ColourWheel.AbsolutePosition.Y)
-
-
 		elseif movingSlider then
-
-			Slider.Position = UDim2.new(Slider.Position.X.Scale, 0, 0, 
-				math.clamp(
-					mousePos.Y - DarknessPicker.AbsolutePosition.Y, 
-					0, 
-					DarknessPicker.AbsoluteSize.Y)
-			)	
+			Slider.Position = UDim2.new(Slider.Position.X.Scale, 0, 0,
+				math.clamp(mousePos.Y - DarknessPicker.AbsolutePosition.Y, 0, DarknessPicker.AbsoluteSize.Y))
 		end
-
 		updateColour(centreOfWheel)
-
 	end)
 	draggable(COLORPALLETE)
 end
@@ -2524,6 +2534,17 @@ function library:UpdateTheme(props)
 	pcall(function()
 		if props.MainBg then
 			MAIN.BackgroundColor3 = library.theme.MainBg
+		end
+	end)
+	pcall(function()
+		if props.SectionBg then
+			for _, v in pairs(PCR_1:GetDescendants()) do
+				if v.Name == "Section" or v.Name == "SECTIONCOLOUR" or v.Name == "Z_Holder" then
+					if v:IsA("Frame") then
+						pcall(function() TweenService:Create(v, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.SectionBg}):Play() end)
+					end
+				end
+			end
 		end
 	end)
 	pcall(function()
