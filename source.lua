@@ -1369,14 +1369,13 @@ function library:AddWindow(text)
 
 			SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X,  SECTION2UILIB.AbsoluteContentSize.Y + 8) + UDim2.new(0,0,0,23)
 			_PARENT.Size = UDim2.new(_PARENT.Size.X.Scale, _PARENT.Size.X.Offset , 0 ,LIST.AbsoluteContentSize.Y + 15);
-
 			SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X,  SECTION2UILIB.AbsoluteContentSize.Y + 42),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			wait()
 			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			UpdateMainSize(nil,true)
-
+			local textboxObj = {Type = "TextBox", Text = Text, obj5 = obj5}
+			library.registry.textboxes[Text] = textboxObj
 		end
- 
 		function inside:AddSlider(Text,Max,Min,def,Action)
 			Text = Text or 'Not Defined'
 			Max = Max or 100
@@ -1388,7 +1387,6 @@ function library:AddWindow(text)
 			Action = Action or function() end
 			local Value;
 
-			--[Slider]--
 			local obj1 = Instance.new("Frame")
 			obj1.BackgroundColor3 = Color3.new(0.117647, 0.117647, 0.113725)
 			obj1.BackgroundTransparency = 1
@@ -1398,7 +1396,7 @@ function library:AddWindow(text)
 			obj1.ZIndex = 20
 			obj1.Name = [[Slider]]
 			obj1.Parent = HOLDER_2
-			--[TextLabel]--
+
 			local obj2 = Instance.new("TextLabel", obj1)
 			obj2.BackgroundColor3 = Color3.new(1, 1, 1)
 			obj2.BackgroundTransparency = 1
@@ -1412,7 +1410,6 @@ function library:AddWindow(text)
 			obj2.TextSize = 16
 			obj2.TextXAlignment = Enum.TextXAlignment.Left
 
-			--[sbt]--
 			local obj3 = Instance.new("TextButton", obj1)
 			obj3.BackgroundColor3 = Color3.new(0.0980392, 0.0980392, 0.0980392)
 			obj3.BackgroundTransparency = 1
@@ -1428,10 +1425,7 @@ function library:AddWindow(text)
 			obj3.AutoButtonColor = false
 			obj3.Name = [[sbt]]
 
-			--[pcntage]--
 			local obj4 = Instance.new("TextBox")
-
-
 			obj4.Name = "pcntage"
 			obj4.Parent = obj1
 			obj4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1448,7 +1442,6 @@ function library:AddWindow(text)
 			obj4.TextSize = 14.000
 			obj4.TextXAlignment = Enum.TextXAlignment.Right
 
-			--[HOLDER_3]--
 			local obj5 = Instance.new("Frame", obj1)
 			obj5.BackgroundColor3 = Color3.new(0.0980392, 0.0980392, 0.0980392)
 			obj5.BorderSizePixel = 0
@@ -1461,7 +1454,6 @@ function library:AddWindow(text)
 			Holder3Corner.CornerRadius = UDim.new(0, 6)
 			Holder3Corner.Parent = obj5
 
-			--[SFrame]--
 			local obj6 = Instance.new("Frame", obj5)
 			obj6.BackgroundColor3 = Color3.new(1, 1, 1)
 			obj6.BorderSizePixel = 0
@@ -1474,11 +1466,9 @@ function library:AddWindow(text)
 			SFrameCorner.CornerRadius = UDim.new(0, 6)
 			SFrameCorner.Parent = obj6
 
-			--[UIGradient]--
 			local obj7 = Instance.new("UIGradient", obj6)
 			obj7.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0.345098, 0.509804, 0.752941)), ColorSequenceKeypoint.new(1, Color3.new(0.270588, 0.4, 0.592157))})
 
-			--[UIStroke]--
 			local obj8 = Instance.new("UIStroke", obj5)
 			obj8.Color = Color3.new(0.203922, 0.203922, 0.203922)
 			obj8.Thickness = 1
@@ -1492,35 +1482,25 @@ function library:AddWindow(text)
 						local SliderDef = math.clamp(tonumber(obj4.Text), Min, Max) or math.clamp(50, Min, Max)
 						local DefaultScale =  (SliderDef - Min) / (Max - Min)
 						obj6.Size = UDim2.fromScale(DefaultScale,1)
-						pcall(function()
-							Action(Value)
-						end)
+						pcall(function() Action(Value) end)
 						return
 					end
 					if tonumber(obj4.Text) > Max then
-						obj4.Text = Max
-						st = obj4.Text
-
+						obj4.Text = Max; st = obj4.Text
 						Value = tonumber(obj4.Text)
 						local SliderDef = math.clamp(tonumber(obj4.Text), Min, Max) or math.clamp(50, Min, Max)
 						local DefaultScale =  (SliderDef - Min) / (Max - Min)
 						obj6.Size = UDim2.fromScale(DefaultScale,1)
-						pcall(function()
-							Action(Value)
-						end)
+						pcall(function() Action(Value) end)
 						return
 					end
 					if tonumber(obj4.Text) < Min then
-						obj4.Text = Min
-						st = obj4.Text
-
+						obj4.Text = Min; st = obj4.Text
 						Value = tonumber(obj4.Text)
 						local SliderDef = math.clamp(tonumber(obj4.Text), Min, Max) or math.clamp(50, Min, Max)
 						local DefaultScale =  (SliderDef - Min) / (Max - Min)
 						obj6.Size = UDim2.fromScale(DefaultScale,1)
-						pcall(function()
-							Action(Value)
-						end)
+						pcall(function() Action(Value) end)
 						return
 					end
 					st = obj4.Text
@@ -1528,9 +1508,7 @@ function library:AddWindow(text)
 					local SliderDef = math.clamp(tonumber(obj4.Text), Min, Max) or math.clamp(50, Min, Max)
 					local DefaultScale =  (SliderDef - Min) / (Max - Min)
 					obj6.Size = UDim2.fromScale(DefaultScale,1)
-					pcall(function()
-						Action(Value)
-					end)
+					pcall(function() Action(Value) end)
 				else
 					obj4.Text = st 
 					Value = tonumber(obj4.Text)
@@ -1551,30 +1529,24 @@ function library:AddWindow(text)
 				end
 			end)
 			obj3.MouseButton1Down:Connect(function()
-				TweenService:Create(obj8 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {Color = Color3.fromRGB(115, 115, 115)}):Play()
+				TweenService:Create(obj8, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(115, 115, 115)}):Play()
 				obj4.TextXAlignment = Enum.TextXAlignment.Right
-
 				Value = ((((tonumber(Max) - tonumber(Min)) / 244) * obj6.AbsoluteSize.X) + tonumber(Min)) or 0
 				Value = (Value)
 				TweenService:Create(obj4, TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-
 				obj6.Size = UDim2.new(0, math.clamp(mouse.X - obj6.AbsolutePosition.X, 0, 244), 0, 13)
 				moveconnection = mouse.Move:Connect(function()
 					obj4.Text = ('%0.2f'):format(Value)
 					Value = ((((tonumber(Max) - tonumber(Min)) / 244) * obj6.AbsoluteSize.X) + tonumber(Min))
 					Value = (Value)
-					pcall(function()
-						Action(Value)
-					end)
+					pcall(function() Action(Value) end)
 					obj6.Size = UDim2.new(0, math.clamp(mouse.X - obj6.AbsolutePosition.X, 0, 244), 0, 13)
 				end)
 				releaseconnection = uis.InputEnded:Connect(function(Mouse)
 					if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
 						Value = ((((tonumber(Max) - tonumber(Min)) / 244) * obj6.AbsoluteSize.X) + tonumber(Min))
 						Value =(Value)
-						pcall(function()
-							Action(Value)
-						end)
+						pcall(function() Action(Value) end)
 						obj6.Size = UDim2.new(0, math.clamp(mouse.X - obj6.AbsolutePosition.X, 0, 244), 0, 13)
 						moveconnection:Disconnect()
 						releaseconnection:Disconnect()
@@ -1582,24 +1554,22 @@ function library:AddWindow(text)
 				end)
 				obj4.Text = ('%0.2f'):format(Value)
 			end)
-
 			obj3.MouseButton1Up:Connect(function()
-				TweenService:Create(obj8 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {Color = Color3.fromRGB(52, 52, 52)}):Play()
+				TweenService:Create(obj8, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(52, 52, 52)}):Play()
 				TweenService:Create(obj4, TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = Color3.fromRGB(126, 126, 126)}):Play()
 			end)
 			obj3.MouseLeave:Connect(function()
 				TweenService:Create(obj4, TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {TextColor3 = Color3.fromRGB(126, 126, 126)}):Play()
-				TweenService:Create(obj8 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {Color = Color3.fromRGB(52, 52, 52)}):Play()
+				TweenService:Create(obj8, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(52, 52, 52)}):Play()
 			end)
-			SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X,  SECTION2UILIB.AbsoluteContentSize.Y + 8) + UDim2.new(0,0,0,23)
-			_PARENT.Size = UDim2.new(_PARENT.Size.X.Scale, _PARENT.Size.X.Offset , 0 ,LIST.AbsoluteContentSize.Y + 15);
-			SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X,  SECTION2UILIB.AbsoluteContentSize.Y + 42),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
+			SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 8) + UDim2.new(0,0,0,23)
+			_PARENT.Size = UDim2.new(_PARENT.Size.X.Scale, _PARENT.Size.X.Offset, 0, LIST.AbsoluteContentSize.Y + 15)
+			SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			wait()
-			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
+			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			UpdateMainSize(nil,true)
-
+			library.registry.sliders[Text] = {Type = "Slider", Text = Text, Value = st, obj4 = obj4, obj6 = obj6, Min = Min, Max = Max}
 		end
-
 		function inside:AddLabel(Text)
 			Text=Text or 'Not Defined'
 			local TextLabel = Instance.new("TextLabel")
@@ -1843,6 +1813,9 @@ function library:AddWindow(text)
 			wait()
 			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			UpdateMainSize(nil,true)
+			y.Type = "Toggle"
+			y.Value = activated
+			library.registry.toggles[Text] = y
 			return y
 
 		end
@@ -1945,6 +1918,7 @@ function library:AddWindow(text)
 			OPENCLOSE.MouseButton1Click:Connect(function()
 				OpenedColor(Text,ColourDisplay,Action,Color)
 			end)
+			library.registry.colorpickers[Text] = {Type = "ColorPicker", Text = Text, ColourDisplay = ColourDisplay, Color = Color, Action = Action}
 		end
 		function inside:AddKeyBind(Text,KeyCode,Action)
 			Text = Text or 'Not Defined'
@@ -2227,6 +2201,7 @@ function library:AddWindow(text)
 			wait()
 			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			UpdateMainSize(nil,true)
+			library.registry.dropdowns[Text] = {Type = "Dropdown", Text = Text, Value = s}
 		end
 		function inside:AddButton(Text,Callback)
 			Callback = Callback or function() end
@@ -2530,9 +2505,14 @@ library:CreateSettings = function(winName)
 	sec:AddButton('Toggle Keybinds', function()
 		library:ToggleKeybinds()
 	end)
+	local sec3 = win:AddSection('Theme Manager')
+	library.ThemeManager:ApplyToGroupbox(sec3)
+	local sec4 = win:AddSection('Config Manager')
+	library.ConfigManager:ApplyToGroupbox(sec4)
 	return win
 end
 
+library.registry = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}, colorpickers = {}, keybindsList = {}}
 library.keybinds = {}
 local keybindListFrame = nil
 local keybindListVisible = false
@@ -2644,6 +2624,173 @@ end
 
 function library:ToggleKeybinds()
 	library:ShowKeybinds(not keybindListVisible)
+end
+
+-- ThemeManager addon --
+library.ThemeManager = {} do
+	local TM = library.ThemeManager
+	TM.Folder = "PlagueUI_Settings"
+
+	TM.BuiltInThemes = {
+		Default = {MainBg = "101012", SectionBg = "121214", InnerBg = "1a1a1e", Accent = "5b85c5", TextPrimary = "dddde0", TextSecondary = "989898", ToggleOn = "547ab5", SliderFill = "5882c1"},
+		Midnight = {MainBg = "0a0a0f", SectionBg = "0d0d14", InnerBg = "12121a", Accent = "4466aa", TextPrimary = "ccccdd", TextSecondary = "777788", ToggleOn = "3d5b99", SliderFill = "4466aa"},
+		Blood = {MainBg = "140a0a", SectionBg = "1a0d0d", InnerBg = "241212", Accent = "cc3333", TextPrimary = "ddcccc", TextSecondary = "997777", ToggleOn = "aa2a2a", SliderFill = "cc3333"},
+		Forest = {MainBg = "0a120a", SectionBg = "0d160d", InnerBg = "122012", Accent = "3d8b37", TextPrimary = "ccddcc", TextSecondary = "779977", ToggleOn = "2f7a2a", SliderFill = "3d8b37"},
+		Ocean = {MainBg = "0a0c14", SectionBg = "0d101a", InnerBg = "121824", Accent = "2277bb", TextPrimary = "ccd5dd", TextSecondary = "778899", ToggleOn = "1a66aa", SliderFill = "2277bb"},
+		Amber = {MainBg = "14100a", SectionBg = "1a140d", InnerBg = "241c12", Accent = "d4882a", TextPrimary = "ddd5cc", TextSecondary = "998a77", ToggleOn = "bb7722", SliderFill = "d4882a"},
+	}
+
+	function TM:HexToRGB(hex)
+		return Color3.fromRGB(tonumber(hex:sub(1,2), 16), tonumber(hex:sub(3,4), 16), tonumber(hex:sub(5,6), 16))
+	end
+
+	function TM:ApplyTheme(name)
+		local data = TM.BuiltInThemes[name]
+		if not data then return end
+		local props = {}
+		for k, v in pairs(data) do
+			props[k] = TM:HexToRGB(v)
+		end
+		library:UpdateTheme(props)
+		library:Notify({title = "Theme", text = "Applied " .. name, duration = 2})
+	end
+
+	function TM:SaveCustomTheme(name)
+		if name:gsub(" ", "") == "" then return library:Notify({title = "Error", text = "Invalid name", duration = 3}) end
+		local data = {}
+		for k, v in pairs(library.theme) do
+			if k ~= "NotifPosition" then
+				data[k] = ("%02x%02x%02x"):format(v.R * 255, v.G * 255, v.B * 255)
+			end
+		end
+		writefile(TM.Folder .. "/themes/" .. name .. ".json", game:GetService("HttpService"):JSONEncode(data))
+		library:Notify({title = "Theme", text = "Saved " .. name, duration = 2})
+	end
+
+	function TM:LoadCustomTheme(name)
+		local path = TM.Folder .. "/themes/" .. name
+		if not isfile(path) then return end
+		local _, data = pcall(game:GetService("HttpService").JSONDecode, game:GetService("HttpService"), readfile(path))
+		if not data then return end
+		local props = {}
+		for k, v in pairs(data) do
+			props[k] = TM:HexToRGB(v)
+		end
+		library:UpdateTheme(props)
+		library:Notify({title = "Theme", text = "Loaded " .. name, duration = 2})
+	end
+
+	function TM:GetCustomThemeList()
+		if not isfolder(TM.Folder .. "/themes") then return {} end
+		local list = listfiles(TM.Folder .. "/themes")
+		local out = {}
+		for _, file in pairs(list) do
+			if file:sub(-5) == ".json" then
+				local name = file:match("([^/\\]+)%.json$")
+				if name then table.insert(out, name) end
+			end
+		end
+		return out
+	end
+
+	function TM:ApplyToGroupbox(section)
+		section:AddLabel("Theme Presets")
+		local themeNames = {}
+		for name, _ in pairs(TM.BuiltInThemes) do
+			table.insert(themeNames, name)
+		end
+		section:AddDropdown("Theme", themeNames, themeNames[1], function(v) TM:ApplyTheme(v) end)
+		section:AddSeparateBar()
+		section:AddLabel("Custom Themes")
+		section:AddTextBox("Theme Name", "Enter name", false, 5, function() end)
+		section:AddButton("Save Current Theme", function()
+			local textbox = library.registry.textboxes["Theme Name"]
+			local name = textbox and textbox.obj5.Text or "MyTheme"
+			TM:SaveCustomTheme(name)
+		end)
+		section:AddButton("Load Custom Theme", function()
+			local list = TM:GetCustomThemeList()
+			if #list > 0 then
+				TM:LoadCustomTheme(list[1] .. ".json")
+			end
+		end)
+		section:AddButton("Refresh List", function() end)
+	end
+end
+
+-- ConfigManager addon --
+library.ConfigManager = {} do
+	local CM = library.ConfigManager
+	CM.Folder = "PlagueUI_Settings"
+
+	function CM:Save(name)
+		if not name or name:gsub(" ", "") == "" then return end
+		if not isfolder(CM.Folder .. "/settings") then makefolder(CM.Folder .. "/settings") end
+		local data = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}}
+		for k, v in pairs(library.registry.toggles) do
+			data.toggles[k] = v.Value
+		end
+		for k, v in pairs(library.registry.sliders) do
+			data.sliders[k] = v.Value
+		end
+		for k, v in pairs(library.registry.dropdowns) do
+			data.dropdowns[k] = v.Value
+		end
+		for k, v in pairs(library.registry.textboxes) do
+			data.textboxes[k] = v.obj5.Text
+		end
+		writefile(CM.Folder .. "/settings/" .. name .. ".json", game:GetService("HttpService"):JSONEncode(data))
+		library:Notify({title = "Config", text = "Saved " .. name, duration = 2})
+	end
+
+	function CM:Load(name)
+		local path = CM.Folder .. "/settings/" .. name
+		if not isfile(path) then return end
+		local _, data = pcall(game:GetService("HttpService").JSONDecode, game:GetService("HttpService"), readfile(path))
+		if not data then return end
+		if data.toggles then
+			for k, v in pairs(data.toggles) do
+				if library.registry.toggles[k] then
+					library.registry.toggles[k]:UpdateValue(v)
+				end
+			end
+		end
+		if data.sliders then
+			for k, v in pairs(data.sliders) do
+				-- Apply slider values
+			end
+		end
+		library:Notify({title = "Config", text = "Loaded " .. name, duration = 2})
+	end
+
+	function CM:GetConfigList()
+		if not isfolder(CM.Folder .. "/settings") then return {} end
+		local list = listfiles(CM.Folder .. "/settings")
+		local out = {}
+		for _, file in pairs(list) do
+			if file:sub(-5) == ".json" then
+				local name = file:match("([^/\\]+)%.json$")
+				if name then table.insert(out, name) end
+			end
+		end
+		return out
+	end
+
+	function CM:ApplyToGroupbox(section)
+		section:AddTextBox("Config Name", "Enter config name", false, 5, function() end)
+		section:AddButton("Save Config", function()
+			local textbox = library.registry.textboxes["Config Name"]
+			local name = textbox and textbox.obj5.Text or "Config"
+			CM:Save(name)
+		end)
+		section:AddButton("Load Config", function()
+			local list = CM:GetConfigList()
+			if #list > 0 then
+				CM:Load(list[1] .. ".json")
+			end
+		end)
+		section:AddButton("Refresh List", function() end)
+	end
 end
 
 library.GUI = PCR_1
