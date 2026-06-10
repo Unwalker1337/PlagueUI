@@ -1177,7 +1177,7 @@ function library:AddWindow(text)
 
 		SECTIONHOLDER.Name = Texto
 		SECTIONHOLDER.Parent = _PARENT
-		SECTIONHOLDER.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+		SECTIONHOLDER.BackgroundColor3 = library.theme.SectionBg or Color3.fromRGB(18, 18, 20)
 		SECTIONHOLDER.BorderSizePixel = 0      
 		SECTIONHOLDER.Position = UDim2.new(0.0289115645, 0, -4.23979145e-08, 0)
 		SECTIONHOLDER.Size = UDim2.new(0, 275, 0, 138)
@@ -2669,7 +2669,15 @@ function library:UpdateTheme(props)
 	pcall(function()
 		if props.SectionBg then
 			for _, v in pairs(PCR_1:GetDescendants()) do
-				if (v.Name == "Section" or v.Name == "SECTIONCOLOUR" or v.Name == "Z_Holder" or v.Name == "SECTIONHOLDER" or v.Name == "TemplateButton") and v:IsA("Frame") then
+				if v:IsA("Frame") then
+					local name = v.Name
+					if name == "Section" or name == "SECTIONCOLOUR" or name == "Z_Holder" or name == "TemplateButton" then
+						pcall(function() TweenService:Create(v, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.SectionBg}):Play() end)
+					end
+				end
+			end
+			for _, v in pairs(PCR_1:GetDescendants()) do
+				if v:IsA("Frame") and v:FindFirstChild("Section") and v:FindFirstChild("A_label") then
 					pcall(function() TweenService:Create(v, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.SectionBg}):Play() end)
 				end
 			end
@@ -2687,8 +2695,11 @@ function library:UpdateTheme(props)
 	pcall(function()
 		if props.TextPrimary then
 			local oldColor = old.TextPrimary or Color3.fromRGB(221, 221, 221)
+			local function matchColor(c)
+				return math.abs(c.R - oldColor.R) < 0.01 and math.abs(c.G - oldColor.G) < 0.01 and math.abs(c.B - oldColor.B) < 0.01
+			end
 			for _, v in pairs(PCR_1:GetDescendants()) do
-				if v:IsA("TextLabel") and v.TextColor3 == oldColor then
+				if v:IsA("TextLabel") and matchColor(v.TextColor3) then
 					v.TextColor3 = library.theme.TextPrimary
 				end
 			end
@@ -2697,8 +2708,11 @@ function library:UpdateTheme(props)
 	pcall(function()
 		if props.TextSecondary then
 			local oldColor = old.TextSecondary or Color3.fromRGB(197, 197, 197)
+			local function matchColor(c)
+				return math.abs(c.R - oldColor.R) < 0.01 and math.abs(c.G - oldColor.G) < 0.01 and math.abs(c.B - oldColor.B) < 0.01
+			end
 			for _, v in pairs(PCR_1:GetDescendants()) do
-				if v:IsA("TextLabel") and v.TextColor3 == oldColor then
+				if v:IsA("TextLabel") and matchColor(v.TextColor3) then
 					v.TextColor3 = library.theme.TextSecondary
 				end
 			end
@@ -2707,8 +2721,17 @@ function library:UpdateTheme(props)
 	pcall(function()
 		if props.ToggleOn then
 			for _, t in pairs(library.registry.toggles) do
-				if t.ColorFrame then
+				if t.ColorFrame and t.Value == true then
 					TweenService:Create(t.ColorFrame, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.ToggleOn}):Play()
+				end
+			end
+		end
+	end)
+	pcall(function()
+		if props.ToggleOff then
+			for _, t in pairs(library.registry.toggles) do
+				if t.ColorFrame and t.Value == false then
+					TweenService:Create(t.ColorFrame, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.ToggleOff}):Play()
 				end
 			end
 		end
@@ -3050,12 +3073,12 @@ library.ThemeManager = {} do
 	TM.Folder = "PlagueUI_Settings"
 
 	TM.BuiltInThemes = {
-		Default = {MainBg = "101012", SectionBg = "121214", InnerBg = "1a1a1e", Accent = "5b85c5", TextPrimary = "dddde0", TextSecondary = "989898", ToggleOn = "547ab5", SliderFill = "5882c1"},
-		Midnight = {MainBg = "0a0a0f", SectionBg = "0d0d14", InnerBg = "12121a", Accent = "4466aa", TextPrimary = "ccccdd", TextSecondary = "777788", ToggleOn = "3d5b99", SliderFill = "4466aa"},
-		Blood = {MainBg = "140a0a", SectionBg = "1a0d0d", InnerBg = "241212", Accent = "cc3333", TextPrimary = "ddcccc", TextSecondary = "997777", ToggleOn = "aa2a2a", SliderFill = "cc3333"},
-		Forest = {MainBg = "0a120a", SectionBg = "0d160d", InnerBg = "122012", Accent = "3d8b37", TextPrimary = "ccddcc", TextSecondary = "779977", ToggleOn = "2f7a2a", SliderFill = "3d8b37"},
-		Ocean = {MainBg = "0a0c14", SectionBg = "0d101a", InnerBg = "121824", Accent = "2277bb", TextPrimary = "ccd5dd", TextSecondary = "778899", ToggleOn = "1a66aa", SliderFill = "2277bb"},
-		Amber = {MainBg = "14100a", SectionBg = "1a140d", InnerBg = "241c12", Accent = "d4882a", TextPrimary = "ddd5cc", TextSecondary = "998a77", ToggleOn = "bb7722", SliderFill = "d4882a"},
+		Default = {MainBg = "101012", SectionBg = "121214", InnerBg = "1a1a1e", Accent = "5b85c5", TextPrimary = "dddde0", TextSecondary = "989898", ToggleOn = "547ab5", ToggleOff = "191919", SliderFill = "5882c1"},
+		Midnight = {MainBg = "0a0a0f", SectionBg = "0d0d14", InnerBg = "12121a", Accent = "4466aa", TextPrimary = "ccccdd", TextSecondary = "777788", ToggleOn = "3d5b99", ToggleOff = "121215", SliderFill = "4466aa"},
+		Blood = {MainBg = "140a0a", SectionBg = "1a0d0d", InnerBg = "241212", Accent = "cc3333", TextPrimary = "ddcccc", TextSecondary = "997777", ToggleOn = "aa2a2a", ToggleOff = "1a0d0d", SliderFill = "cc3333"},
+		Forest = {MainBg = "0a120a", SectionBg = "0d160d", InnerBg = "122012", Accent = "3d8b37", TextPrimary = "ccddcc", TextSecondary = "779977", ToggleOn = "2f7a2a", ToggleOff = "0d160d", SliderFill = "3d8b37"},
+		Ocean = {MainBg = "0a0c14", SectionBg = "0d101a", InnerBg = "121824", Accent = "2277bb", TextPrimary = "ccd5dd", TextSecondary = "778899", ToggleOn = "1a66aa", ToggleOff = "0d101a", SliderFill = "2277bb"},
+		Amber = {MainBg = "14100a", SectionBg = "1a140d", InnerBg = "241c12", Accent = "d4882a", TextPrimary = "ddd5cc", TextSecondary = "998a77", ToggleOn = "bb7722", ToggleOff = "1a140d", SliderFill = "d4882a"},
 	}
 
 	function TM:HexToRGB(hex)
