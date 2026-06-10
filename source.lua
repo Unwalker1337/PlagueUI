@@ -1878,12 +1878,6 @@ function library:AddWindow(text)
 			ColourDisplayCorner.CornerRadius = UDim.new(0, 4)
 			ColourDisplayCorner.Parent = ColourDisplay
 
-			local ColourDisplayStroke = Instance.new("UIStroke")
-			ColourDisplayStroke.Color = Color3.fromRGB(255, 255, 255)
-			ColourDisplayStroke.Transparency = 0.85
-			ColourDisplayStroke.Thickness = 1
-			ColourDisplayStroke.Parent = ColourDisplay
-
 			ColourDisplay.Name = "ColourDisplay"
 			ColourDisplay.Parent = SECTIONCOLOUR
 			ColourDisplay.BackgroundColor3 = Color
@@ -2143,6 +2137,7 @@ function library:AddWindow(text)
 				if sel == v and v ~= Toggle.Text then
 					TweenService:Create(OPTION , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28,28,28)}):Play()	
 					s = sel;
+					TextLabel.Text = s
 				else
 					TweenService:Create(OPTION , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(37,37,37)}):Play()	
 				end
@@ -2154,6 +2149,7 @@ function library:AddWindow(text)
 						end	
 					end
 					s=TextLabel_3.Text
+					TextLabel.Text = s
 					TweenService:Create(OPTION , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)}):Play()	
 					pcall(function()
 						Action(s)
@@ -2200,6 +2196,198 @@ function library:AddWindow(text)
 			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			UpdateMainSize(nil,true)
 			library.registry.dropdowns[Text] = {Type = "Dropdown", Text = Text, Value = s, Frame = DRPDOWN, Toggle = Toggle, ListLayout = UIListLayout}
+		end
+		function inside:AddMultiDropdown(Text, tbl, sel, Action)
+			Text = Text or 'Not Defined'
+			tbl = tbl or {'Not','Defined','Option'}
+			sel = sel or {}
+			Action = Action or function() end
+
+			local K = false
+			local selected = {}
+			for _, v in pairs(sel) do selected[v] = true end
+
+			local DRPDOWN = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local Toggle = Instance.new("TextButton")
+			local _456fg = Instance.new("UICorner")
+			local TextLabel = Instance.new("TextLabel")
+			local TextLabel_2 = Instance.new("TextLabel")
+			local UIListLayout = Instance.new("UIListLayout")
+
+			DRPDOWN.Name = "DRPDOWN"
+			DRPDOWN.Parent = HOLDER_2
+			DRPDOWN.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+			DRPDOWN.BorderSizePixel = 0
+			DRPDOWN.ClipsDescendants = true
+			DRPDOWN.Position = UDim2.new(0.0362365209, 0, 0.69055295, 0)
+			DRPDOWN.Size = UDim2.new(0, 252, 0, 25)
+			DRPDOWN.ZIndex = 27
+
+			UICorner.CornerRadius = UDim.new(0, 4)
+			UICorner.Parent = DRPDOWN
+
+			Toggle.Name = "Toggle"
+			Toggle.Parent = DRPDOWN
+			Toggle.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+			Toggle.BorderSizePixel = 0
+			Toggle.ClipsDescendants = true
+			Toggle.Size = UDim2.new(0, 252, 0, 22)
+			Toggle.AutoButtonColor = false
+			Toggle.Font = Enum.Font.SourceSansSemibold
+			Toggle.Text = "  "
+			Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Toggle.TextSize = 16
+
+			_456fg.CornerRadius = UDim.new(0, 4)
+			_456fg.Name = "456fg"
+			_456fg.Parent = Toggle
+
+			TextLabel.Parent = Toggle
+			TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+			TextLabel.BackgroundTransparency = 1
+			TextLabel.BorderSizePixel = 0
+			TextLabel.Position = UDim2.new(0.44808808, 0, 0.454545468, 0)
+			TextLabel.Size = UDim2.new(0, 208, 0, 18)
+			TextLabel.ZIndex = 30
+			TextLabel.Font = Enum.Font.SourceSansSemibold
+			TextLabel.Text = Text
+			TextLabel.TextColor3 = Color3.fromRGB(197, 197, 197)
+			TextLabel.TextSize = 16
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+			TextLabel_2.Parent = Toggle
+			TextLabel_2.AnchorPoint = Vector2.new(0.5, 0.5)
+			TextLabel_2.BackgroundTransparency = 1
+			TextLabel_2.BorderSizePixel = 0
+			TextLabel_2.Position = UDim2.new(0.91685158, 0, 0.550000012, 0)
+			TextLabel_2.Size = UDim2.new(0, 14, 0, 14)
+			TextLabel_2.ZIndex = 30
+			TextLabel_2.Font = Enum.Font.SourceSansSemibold
+			TextLabel_2.Text = "+"
+			TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel_2.TextSize = 16
+			TextLabel_2.TextXAlignment = Enum.TextXAlignment.Right
+
+			UIListLayout.Parent = DRPDOWN
+			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			UIListLayout.Padding = UDim.new(0, 3)
+
+			local function updateLabel()
+				local count = 0
+				local txt = ""
+				for _, v in pairs(tbl) do
+					if selected[v] then
+						count = count + 1
+						if txt ~= "" then txt = txt .. ", " end
+						txt = txt .. v
+					end
+				end
+				TextLabel.Text = txt
+			end
+
+			for i, v in pairs(tbl) do
+				local OPTION = Instance.new("TextButton")
+				local _456fg_2 = Instance.new("UICorner")
+				local TextLabel_3 = Instance.new("TextLabel")
+				local CheckLabel = Instance.new("TextLabel")
+
+				OPTION.Name = "OPTION"
+				OPTION.Parent = DRPDOWN
+				OPTION.BackgroundColor3 = Color3.fromRGB(37, 37, 37)
+				OPTION.BorderSizePixel = 0
+				OPTION.ClipsDescendants = true
+				OPTION.Position = UDim2.new(0.055555556, 0, 0.378787875, 0)
+				OPTION.Size = UDim2.new(0, 233, 0, 16)
+				OPTION.ZIndex = 29
+				OPTION.AutoButtonColor = false
+				OPTION.Font = Enum.Font.SourceSansSemibold
+				OPTION.Text = ""
+				OPTION.TextColor3 = Color3.fromRGB(255, 255, 255)
+				OPTION.TextSize = 16
+
+				_456fg_2.CornerRadius = UDim.new(0, 4)
+				_456fg_2.Name = "456fg"
+				_456fg_2.Parent = OPTION
+
+				CheckLabel.Parent = OPTION
+				CheckLabel.AnchorPoint = Vector2.new(0, 0.5)
+				CheckLabel.BackgroundTransparency = 1
+				CheckLabel.BorderSizePixel = 0
+				CheckLabel.Position = UDim2.new(0.05, 0, 0.5, 0)
+				CheckLabel.Size = UDim2.new(0, 16, 0, 14)
+				CheckLabel.Font = Enum.Font.SourceSansBold
+				CheckLabel.Text = selected[v] and "вњ“" or " "
+				CheckLabel.TextColor3 = selected[v] and Color3.fromRGB(91, 133, 197) or Color3.fromRGB(80, 80, 80)
+				CheckLabel.TextSize = 14
+
+				TextLabel_3.Parent = OPTION
+				TextLabel_3.AnchorPoint = Vector2.new(0, 0.5)
+				TextLabel_3.BackgroundTransparency = 1
+				TextLabel_3.BorderSizePixel = 0
+				TextLabel_3.Position = UDim2.new(0.18, 0, 0.5, 0)
+				TextLabel_3.Size = UDim2.new(0, 125, 0, 15)
+				TextLabel_3.Font = Enum.Font.SourceSansSemibold
+				TextLabel_3.Text = v
+				TextLabel_3.TextColor3 = Color3.fromRGB(255, 255, 255)
+				TextLabel_3.TextSize = 15
+				TextLabel_3.TextXAlignment = Enum.TextXAlignment.Left
+
+				if selected[v] then
+					TweenService:Create(OPTION, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)}):Play()
+				end
+
+				OPTION.MouseButton1Click:Connect(function()
+					selected[v] = not selected[v]
+					CheckLabel.Text = selected[v] and "вњ“" or " "
+					CheckLabel.TextColor3 = selected[v] and Color3.fromRGB(91, 133, 197) or Color3.fromRGB(80, 80, 80)
+					if selected[v] then
+						TweenService:Create(OPTION, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)}):Play()
+					else
+						TweenService:Create(OPTION, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(37, 37, 37)}):Play()
+					end
+					updateLabel()
+					local result = {}
+					for _, opt in pairs(tbl) do
+						if selected[opt] then table.insert(result, opt) end
+					end
+					pcall(function() Action(result) end)
+				end)
+
+				SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
+				task.wait()
+				_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
+				task.wait()
+				UpdateMainSize(nil, true)
+			end
+
+			Toggle.MouseButton1Click:Connect(function()
+				if not K then
+					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 180}):Play()
+					DRPDOWN:TweenSize(UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+					K = not K
+				else
+					DRPDOWN:TweenSize(UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 0}):Play()
+					K = not K
+				end
+				wait(.3)
+				SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+				wait(.2)
+				_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+				wait(.2)
+				UpdateMainSize(nil, true)
+			end)
+
+			AddRipple(Toggle, TextLabel_2, Color3.fromRGB(180, 180, 180))
+			SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
+			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
+			SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
+			wait()
+			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
+			UpdateMainSize(nil, true)
+			updateLabel()
 		end
 		function inside:AddButton(Text,Callback)
 			Callback = Callback or function() end
@@ -2622,6 +2810,8 @@ function library:SetDropdownOptions(name, newOptions)
 				end
 			end
 			dd.Value = opt
+			local titleLabel = dd.Toggle:FindFirstChildOfClass("TextLabel")
+			if titleLabel then titleLabel.Text = opt end
 			TweenService:Create(OPTION, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)}):Play()
 		end)
 	end
