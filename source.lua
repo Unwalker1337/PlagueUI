@@ -2454,7 +2454,7 @@ function library:AddWindow(text)
 				CheckLabel.Position = UDim2.new(0.05, 0, 0.5, 0)
 				CheckLabel.Size = UDim2.new(0, 16, 0, 14)
 				CheckLabel.Font = Enum.Font.SourceSansBold
-				CheckLabel.Text = selected[v] and "вњ“" or " "
+				CheckLabel.Text = selected[v] and ">" or " "
 				CheckLabel.TextColor3 = selected[v] and Color3.fromRGB(91, 133, 197) or Color3.fromRGB(80, 80, 80)
 				CheckLabel.TextSize = 14
 
@@ -2476,7 +2476,7 @@ function library:AddWindow(text)
 
 				OPTION.MouseButton1Click:Connect(function()
 					selected[v] = not selected[v]
-					CheckLabel.Text = selected[v] and "вњ“" or " "
+					CheckLabel.Text = selected[v] and ">" or " "
 					CheckLabel.TextColor3 = selected[v] and Color3.fromRGB(91, 133, 197) or Color3.fromRGB(80, 80, 80)
 					if selected[v] then
 						TweenService:Create(OPTION, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)}):Play()
@@ -2935,10 +2935,6 @@ function library:CreateSettings(winName)
 	end)
 	local sec3 = win:AddSection('GUI Toggle')
 	sec3:AddKeyBind('Toggle GUI', Enum.KeyCode.RightControl, function()
-		guiVisible = not guiVisible
-		MAIN.Visible = guiVisible
-	end)
-	sec3:AddButton('Toggle GUI', function()
 		guiVisible = not guiVisible
 		MAIN.Visible = guiVisible
 	end)
