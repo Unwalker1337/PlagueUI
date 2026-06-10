@@ -853,77 +853,85 @@ end
 
 function library:AddWatermark(Text)
 	local intern = {}
-	local size
+	local size = math.max(#Text * 7, 20)
+	local accentColor = library.theme.Accent or Color3.fromRGB(91, 133, 197)
+	local textColor = library.theme.TextPrimary or Color3.fromRGB(197, 197, 197)
 
-	size=(#Text) * 7
-
-	--[MAIN]--
 	local obj1 = Instance.new("Frame")
 	obj1.AnchorPoint = Vector2.new(0, 0.5)
-	obj1.BackgroundColor3 = Color3.new(0.0862745, 0.0862745, 0.0862745)
+	obj1.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
 	obj1.BorderSizePixel = 0
 	obj1.Position = UDim2.new(0.0109301507, 0, 0.973039031, 0)
 	obj1.Size = UDim2.new(0, size, 0, 28)
 	obj1.ZIndex = 8
-	obj1.Name = [[MAIN]]
+	obj1.Name = "Watermark"
 	obj1.Visible = true
 	obj1.ClipsDescendants = true
 	obj1.Parent = PCR_1
-	--[UIStroke]--
-	local obj2 = Instance.new("UIStroke", obj1)
-	obj2.Color = Color3.new(0.309804, 0.458824, 0.67451)
 
-	--[MAIN]--
-	local obj3 = Instance.new("Frame", obj1)
+	local wmCorner = Instance.new("UICorner")
+	wmCorner.CornerRadius = UDim.new(0, 6)
+	wmCorner.Parent = obj1
+
+	local wmStroke = Instance.new("UIStroke")
+	wmStroke.Color = accentColor
+	wmStroke.Thickness = 1
+	wmStroke.Transparency = 0.3
+	wmStroke.Parent = obj1
+
+	local obj3 = Instance.new("Frame")
+	obj3.Parent = obj1
 	obj3.AnchorPoint = Vector2.new(0.5, 0.5)
-	obj3.BackgroundColor3 = Color3.new(0.113725, 0.113725, 0.113725)
+	obj3.BackgroundColor3 = Color3.fromRGB(22, 22, 25)
 	obj3.BorderSizePixel = 0
 	obj3.Position = UDim2.new(0.5, 0, 0.5, 0)
-	obj3.Size = UDim2.new(1, -6, 1, -6)
+	obj3.Size = UDim2.new(1, -4, 1, -4)
 	obj3.ZIndex = 7
-	obj3.Name = [[MAIN]]
+	obj3.Name = "WatermarkInner"
 
-	--[TextLabel]--
-	local obj4 = Instance.new("TextLabel", obj3)
-	obj4.BackgroundColor3 = Color3.new(1, 1, 1)
+	local innerCorner = Instance.new("UICorner")
+	innerCorner.CornerRadius = UDim.new(0, 4)
+	innerCorner.Parent = obj3
+
+	local obj4 = Instance.new("TextLabel")
+	obj4.Parent = obj3
 	obj4.BackgroundTransparency = 1
 	obj4.BorderSizePixel = 0
-	obj4.Position = UDim2.new(0.0215827357, 0, 0, 0)
-	obj4.Size = UDim2.new(0, 325, 0, 22)
+	obj4.Position = UDim2.new(0.02, 4, 0, 0)
+	obj4.Size = UDim2.new(1, -8, 1, 0)
 	obj4.Font = Enum.Font.SourceSansSemibold
 	obj4.Text = Text
-	obj4.TextColor3 = Color3.new(0.772549, 0.772549, 0.772549)
-	obj4.TextSize = 16
+	obj4.TextColor3 = textColor
+	obj4.TextSize = 14
 	obj4.TextXAlignment = Enum.TextXAlignment.Left
 
 	function intern:ChangeText(text)
-		local size = #text * 7 + 5
-		obj4.Text = text;
+		local newSize = math.max(#text * 7, 20)
+		obj4.Text = text
 		Text = text
-		obj1.Size = UDim2.new(0, size, 0, 28)
+		obj1.Size = UDim2.new(0, newSize, 0, 28)
 	end
+
+	function intern:SetTextColor(color)
+		obj4.TextColor3 = color or textColor
+	end
+
+	function intern:SetStrokeColor(color)
+		wmStroke.Color = color or accentColor
+	end
+
 	local can = true
 	function intern:Visible(val)
-		if val  == nil then
-			return obj1.Visible
-		end
+		if val == nil then return obj1.Visible end
 		if can then
-			val=not val
-			if not val then
-				can = not can
-				obj1.Visible = true
-				wait(.5)
-				can = not can
-			else
-				can = not can
-
-				obj1.Visible =false
-				wait(.5)
-				can = not can
-			end
+			val = not val
+			can = false
+			obj1.Visible = not val
+			task.wait(0.5)
+			can = true
 		end
-
 	end
+
 	return intern
 end
 
@@ -2704,6 +2712,21 @@ function library:UpdateTheme(props)
 					local obj7 = s.obj6:FindFirstChildOfClass("UIGradient")
 					if obj7 then
 						obj7.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, library.theme.SliderFill), ColorSequenceKeypoint.new(1, library.theme.SliderFill:lerp(Color3.new(0,0,0), 0.3))})
+					end
+				end
+			end
+		end
+	end)
+	pcall(function()
+		if props.Accent or props.TextPrimary then
+			for _, v in pairs(PCR_1:GetDescendants()) do
+				if v.Name == "Watermark" and v:IsA("Frame") then
+					local stroke = v:FindFirstChildOfClass("UIStroke")
+					if stroke then stroke.Color = library.theme.Accent end
+					local inner = v:FindFirstChild("WatermarkInner")
+					if inner then
+						local label = inner:FindFirstChildOfClass("TextLabel")
+						if label then label.TextColor3 = library.theme.TextPrimary end
 					end
 				end
 			end
