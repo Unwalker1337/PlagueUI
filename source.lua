@@ -2348,6 +2348,42 @@ function library:UpdateTheme(props)
 	for k, v in pairs(props) do
 		library.theme[k] = v
 	end
+	if props.Accent then
+		linedecoupper.BackgroundColor3 = library.theme.Accent
+		linedecoDOWNER.BackgroundColor3 = library.theme.Accent
+	end
+	if props.MainBg then
+		MAIN.BackgroundColor3 = library.theme.MainBg
+	end
+end
+
+function library:CreateSettings(winName)
+	winName = winName or 'Settings'
+	local win = library:AddWindow(winName)
+	local sec = win:AddSection('Theme Colors')
+	sec:AddColorPallete('Accent Color', library.theme.Accent, function(c)
+		library:UpdateTheme({Accent = c})
+	end)
+	sec:AddColorPallete('Main Background', library.theme.MainBg, function(c)
+		library:UpdateTheme({MainBg = c})
+	end)
+	sec:AddColorPallete('Section Background', library.theme.SectionBg, function(c)
+		library:UpdateTheme({SectionBg = c})
+	end)
+	sec:AddColorPallete('Text Primary', library.theme.TextPrimary, function(c)
+		library:UpdateTheme({TextPrimary = c})
+	end)
+	sec:AddColorPallete('Toggle On', library.theme.ToggleOn, function(c)
+		library:UpdateTheme({ToggleOn = c})
+	end)
+	sec:AddColorPallete('Slider Fill', library.theme.SliderFill, function(c)
+		library:UpdateTheme({SliderFill = c})
+	end)
+	sec:AddSeparateBar()
+	sec:AddButton('Toggle Keybinds', function()
+		library:ToggleKeybinds()
+	end)
+	return win
 end
 
 library.keybinds = {}
