@@ -1805,6 +1805,7 @@ function library:AddWindow(text)
 			UpdateMainSize(nil,true)
 			y.Type = "Toggle"
 			y.Value = activated
+			y.ColorFrame = color
 			library.registry.toggles[Text] = y
 			return y
 
@@ -2198,7 +2199,7 @@ function library:AddWindow(text)
 			wait()
 			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true) 
 			UpdateMainSize(nil,true)
-			library.registry.dropdowns[Text] = {Type = "Dropdown", Text = Text, Value = s}
+			library.registry.dropdowns[Text] = {Type = "Dropdown", Text = Text, Value = s, Frame = DRPDOWN, Toggle = Toggle, ListLayout = UIListLayout}
 		end
 		function inside:AddButton(Text,Callback)
 			Callback = Callback or function() end
@@ -2321,45 +2322,50 @@ function library:UpdateTheme(props)
 	for k, v in pairs(props) do
 		library.theme[k] = v
 	end
-	if props.Accent then
-		linedecoupper.BackgroundColor3 = library.theme.Accent
-		linedecoDOWNER.BackgroundColor3 = library.theme.Accent
-		for _, cp in pairs(library.registry.colorpickers) do
-			if cp.Type == "ColorPicker" and cp.AccentBar then
-				cp.AccentBar.BackgroundColor3 = library.theme.Accent
-			end
-		end
-		for _, v in pairs(limit1:GetDescendants()) do
-			if v.Name == "F_line" and v:IsA("Frame") then
-				v.BackgroundColor3 = library.theme.Accent
-			end
-		end
-	end
-	if props.MainBg then
-		MAIN.BackgroundColor3 = library.theme.MainBg
-	end
-	if props.ToggleOn then
-		for _, t in pairs(library.registry.toggles) do
-			if t.ToggleColor then
-				TweenService:Create(t.ToggleColor, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.ToggleOn}):Play()
-			end
-		end
-	end
-	if props.SliderFill then
-		for _, s in pairs(library.registry.sliders) do
-			if s.obj6 then
-				local obj7 = s.obj6:FindFirstChildOfClass("UIGradient")
-				if obj7 then
-					obj7.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, library.theme.SliderFill), ColorSequenceKeypoint.new(1, library.theme.SliderFill:lerp(Color3.new(0,0,0), 0.3))})
+	pcall(function()
+		if props.Accent then
+			linedecoupper.BackgroundColor3 = library.theme.Accent
+			linedecoDOWNER.BackgroundColor3 = library.theme.Accent
+			for _, v in pairs(PCR_1:GetDescendants()) do
+				if v.Name == "F_line" and v:IsA("Frame") then
+					v.BackgroundColor3 = library.theme.Accent
 				end
 			end
 		end
-	end
-	for _, cp in pairs(library.registry.colorpickers) do
-		if cp.ColourDisplay and library.theme[cp.textKey] then
-			cp.ColourDisplay.ImageColor3 = library.theme[cp.textKey]
+	end)
+	pcall(function()
+		if props.MainBg then
+			MAIN.BackgroundColor3 = library.theme.MainBg
 		end
-	end
+	end)
+	pcall(function()
+		if props.ToggleOn then
+			for _, t in pairs(library.registry.toggles) do
+				if t.ColorFrame then
+					TweenService:Create(t.ColorFrame, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.ToggleOn}):Play()
+				end
+			end
+		end
+	end)
+	pcall(function()
+		if props.SliderFill then
+			for _, s in pairs(library.registry.sliders) do
+				if s.obj6 then
+					local obj7 = s.obj6:FindFirstChildOfClass("UIGradient")
+					if obj7 then
+						obj7.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, library.theme.SliderFill), ColorSequenceKeypoint.new(1, library.theme.SliderFill:lerp(Color3.new(0,0,0), 0.3))})
+					end
+				end
+			end
+		end
+	end)
+	pcall(function()
+		for _, cp in pairs(library.registry.colorpickers) do
+			if cp.ColourDisplay and library.theme[cp.textKey] then
+				cp.ColourDisplay.ImageColor3 = library.theme[cp.textKey]
+			end
+		end
+	end)
 end
 
 local notificationHolder = nil
@@ -2570,6 +2576,57 @@ function library:CreateSettings(winName)
 	return win
 end
 
+function library:SetDropdownOptions(name, newOptions)
+	local dd = library.registry.dropdowns[name]
+	if not dd or not dd.Frame then return end
+	for _, v in pairs(dd.Frame:GetChildren()) do
+		if v:IsA("TextButton") and v ~= dd.Toggle then
+			v:Destroy()
+		end
+	end
+	dd.Frame.Size = UDim2.new(0, 252, 0, 25)
+	dd.Toggle.Visible = true
+	for _, opt in pairs(newOptions) do
+		local OPTION = Instance.new("TextButton")
+		local _456fg_2 = Instance.new("UICorner")
+		local TextLabel_3 = Instance.new("TextLabel")
+		OPTION.Name = "OPTION"
+		OPTION.Parent = dd.Frame
+		OPTION.BackgroundColor3 = Color3.fromRGB(37, 37, 37)
+		OPTION.BorderSizePixel = 0
+		OPTION.ClipsDescendants = true
+		OPTION.Size = UDim2.new(0, 233, 0, 16)
+		OPTION.ZIndex = 29
+		OPTION.AutoButtonColor = false
+		OPTION.Font = Enum.Font.SourceSansSemibold
+		OPTION.Text = ""
+		OPTION.TextColor3 = Color3.fromRGB(255, 255, 255)
+		OPTION.TextSize = 16
+		_456fg_2.CornerRadius = UDim.new(0, 4)
+		_456fg_2.Name = "456fg"
+		_456fg_2.Parent = OPTION
+		TextLabel_3.Parent = OPTION
+		TextLabel_3.AnchorPoint = Vector2.new(0.5, 0.5)
+		TextLabel_3.BackgroundTransparency = 1
+		TextLabel_3.BorderSizePixel = 0
+		TextLabel_3.Position = UDim2.new(0.5, 0, 0.5, 0)
+		TextLabel_3.Size = UDim2.new(0, 125, 0, 15)
+		TextLabel_3.Font = Enum.Font.SourceSansSemibold
+		TextLabel_3.Text = opt
+		TextLabel_3.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TextLabel_3.TextSize = 15
+		OPTION.MouseButton1Click:Connect(function()
+			for _, v in pairs(dd.Frame:GetChildren()) do
+				if v:IsA("TextButton") and v ~= dd.Toggle then
+					TweenService:Create(v, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(37, 37, 37)}):Play()
+				end
+			end
+			dd.Value = opt
+			TweenService:Create(OPTION, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)}):Play()
+		end)
+	end
+end
+
 library.registry = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}, colorpickers = {}, keybindsList = {}}
 local guiVisible = true
 local guiToggleKey = Enum.KeyCode.RightControl
@@ -2666,9 +2723,10 @@ library.ThemeManager = {} do
 		section:AddButton("Save Custom Theme", function()
 			local tb = library.registry.textboxes["Custom Theme Name"]
 			local name = tb and tb.obj5.Text or "MyTheme"
-			TM:SaveCustomTheme(name)
-			local list = TM:GetCustomThemeList()
-			if #list > 0 then
+			if name and name ~= "" then
+				TM:SaveCustomTheme(name)
+				local list = TM:GetCustomThemeList()
+				library:SetDropdownOptions("Custom Theme List", list)
 				library.registry.dropdowns["Custom Theme List"].Value = name
 			end
 		end)
@@ -2763,9 +2821,10 @@ library.ConfigManager = {} do
 		section:AddButton("Create Config", function()
 			local tb = library.registry.textboxes["Config Name"]
 			local name = tb and tb.obj5.Text or "Config"
-			CM:Save(name)
-			local list = CM:GetConfigList()
-			if #list > 0 then
+			if name and name ~= "" then
+				CM:Save(name)
+				local list = CM:GetConfigList()
+				library:SetDropdownOptions("Config List", list)
 				library.registry.dropdowns["Config List"].Value = name
 			end
 		end)
@@ -2787,8 +2846,7 @@ library.ConfigManager = {} do
 		end)
 		section:AddButton("Remove Autoload", function()
 			local path = CM.Folder .. "/settings/autoload.txt"
-			if isfile(path) then
-				delfile(path)
+			if isfile(path) then delfile(path)
 				library:Notify({title = "Config", text = "Autoload removed", duration = 2})
 			end
 		end)
