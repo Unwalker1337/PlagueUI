@@ -1820,9 +1820,6 @@ function library:AddWindow(text)
 			if keybind then
 				local ischanging = false;
 				local KeyCode = keybind
-				local keyName = keybind.Name or tostring(keybind)
-				table.insert(library.keybinds, {name = Text, key = keyName, keybind = keybind, object = KeyButton, func = Update})
-				spawn(refreshKeybindList)
 
 				game:GetService("UserInputService").InputBegan:connect(function(a, gp) 
 					if not gp then 
@@ -1849,13 +1846,6 @@ function library:AddWindow(text)
 						}):Play()
 						KeyButton:TweenSize(UDim2.new(0,getsize( v1.KeyCode.Name),0,13), "Out", "Quint", 0.3, true)
 						KeyButton.Text = v1.KeyCode.Name
-						for _, kb in pairs(library.keybinds) do
-							if kb.object == KeyButton then
-								kb.key = v1.KeyCode.Name
-								kb.keybind = v1.KeyCode
-							end
-						end
-						spawn(refreshKeybindList)
 						KeyCode = v1.KeyCode.Name;
 						wait(.2)
 						ischanging = false
@@ -1991,7 +1981,14 @@ function library:AddWindow(text)
 			OPENCLOSE.MouseButton1Click:Connect(function()
 				OpenedColor(Text,ColourDisplay,Action,Color)
 			end)
-			library.registry.colorpickers[Text] = {Type = "ColorPicker", Text = Text, ColourDisplay = ColourDisplay, Color = Color, Action = Action}
+			local textKey = Text:gsub(" ", ""):gsub("Color", ""):gsub("Background", ""):gsub("Section", ""):gsub("Text", ""):gsub("Accent", "Accent"):gsub("Toggle", "Toggle"):gsub("Slider", "Slider")
+			for themeKey, _ in pairs(library.theme) do
+				if Text:find(themeKey) then
+					textKey = themeKey
+					break
+				end
+			end
+			library.registry.colorpickers[Text] = {Type = "ColorPicker", Text = Text, textKey = textKey, ColourDisplay = ColourDisplay, Color = Color, Action = Action}
 		end
 		function inside:AddKeyBind(Text,KeyCode,Action)
 			Text = Text or 'Not Defined'
@@ -2400,9 +2397,36 @@ function library:UpdateTheme(props)
 	if props.Accent then
 		linedecoupper.BackgroundColor3 = library.theme.Accent
 		linedecoDOWNER.BackgroundColor3 = library.theme.Accent
+		for _, cp in pairs(library.registry.colorpickers) do
+			if cp.Type == "ColorPicker" and cp.AccentBar then
+				cp.AccentBar.BackgroundColor3 = library.theme.Accent
+			end
+		end
 	end
 	if props.MainBg then
 		MAIN.BackgroundColor3 = library.theme.MainBg
+	end
+	if props.ToggleOn then
+		for _, t in pairs(library.registry.toggles) do
+			if t.ToggleColor then
+				TweenService:Create(t.ToggleColor, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.ToggleOn}):Play()
+			end
+		end
+	end
+	if props.SliderFill then
+		for _, s in pairs(library.registry.sliders) do
+			if s.obj6 then
+				local obj7 = s.obj6:FindFirstChildOfClass("UIGradient")
+				if obj7 then
+					obj7.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, library.theme.SliderFill), ColorSequenceKeypoint.new(1, library.theme.SliderFill:lerp(Color3.new(0,0,0), 0.3))})
+				end
+			end
+		end
+	end
+	for _, cp in pairs(library.registry.colorpickers) do
+		if cp.ColourDisplay and library.theme[cp.textKey] then
+			cp.ColourDisplay.ImageColor3 = library.theme[cp.textKey]
+		end
 	end
 end
 
@@ -2440,60 +2464,43 @@ function library:Notify(config)
 	local notif = Instance.new("Frame")
 	notif.Name = "Notification"
 	notif.Parent = notificationHolder
-	notif.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-	notif.BackgroundTransparency = 0.15
+	notif.BackgroundColor3 = Color3.fromRGB(24, 24, 27)
 	notif.BorderSizePixel = 0
-	notif.Size = UDim2.new(0, 340, 0, 0)
+	notif.Size = UDim2.new(0, 280, 0, 0)
 	notif.ZIndex = 201
 	notif.ClipsDescendants = true
 
 	local notifCorner = Instance.new("UICorner")
-	notifCorner.CornerRadius = UDim.new(0, 10)
+	notifCorner.CornerRadius = UDim.new(0, 6)
 	notifCorner.Parent = notif
 
 	local notifStroke = Instance.new("UIStroke")
 	notifStroke.Color = Color3.fromRGB(255, 255, 255)
-	notifStroke.Transparency = 0.88
+	notifStroke.Transparency = 0.92
 	notifStroke.Thickness = 1
 	notifStroke.Parent = notif
 
-	local notifShadow = Instance.new("ImageLabel")
-	notifShadow.Name = "NotifShadow"
-	notifShadow.Parent = notif
-	notifShadow.BackgroundTransparency = 1
-	notifShadow.BorderSizePixel = 0
-	notifShadow.Position = UDim2.new(0, -8, 0, -8)
-	notifShadow.Size = UDim2.new(1, 16, 1, 16)
-	notifShadow.ZIndex = -1
-	notifShadow.Image = "rbxassetid://1316045217"
-	notifShadow.ImageColor3 = Color3.new(0, 0, 0)
-	notifShadow.ImageTransparency = 0.5
-	notifShadow.ScaleType = Enum.ScaleType.Slice
-	notifShadow.SliceCenter = Rect.new(10, 10, 10, 10)
-
-	local iconLabel = Instance.new("ImageLabel")
-	iconLabel.Name = "Icon"
-	iconLabel.Parent = notif
-	iconLabel.BackgroundTransparency = 1
-	iconLabel.BorderSizePixel = 0
-	iconLabel.Position = UDim2.new(0, 14, 0, 14)
-	iconLabel.Size = UDim2.new(0, 20, 0, 20)
-	iconLabel.ZIndex = 203
-	iconLabel.Image = "rbxassetid://3944680095"
-	iconLabel.ImageColor3 = library.theme.Accent
+	local accentBar = Instance.new("Frame")
+	accentBar.Name = "AccentBar"
+	accentBar.Parent = notif
+	accentBar.BackgroundColor3 = library.theme.Accent
+	accentBar.BorderSizePixel = 0
+	accentBar.Position = UDim2.new(0, 0, 0, 0)
+	accentBar.Size = UDim2.new(0, 3, 0, 0)
+	accentBar.ZIndex = 202
 
 	local titleLabel = Instance.new("TextLabel")
 	titleLabel.Name = "Title"
 	titleLabel.Parent = notif
 	titleLabel.BackgroundTransparency = 1
 	titleLabel.BorderSizePixel = 0
-	titleLabel.Position = UDim2.new(0, 44, 0, 12)
-	titleLabel.Size = UDim2.new(1, -56, 0, 20)
+	titleLabel.Position = UDim2.new(0, 14, 0, 8)
+	titleLabel.Size = UDim2.new(1, -22, 0, 18)
 	titleLabel.ZIndex = 203
 	titleLabel.Font = Enum.Font.SourceSansSemibold
 	titleLabel.Text = title
-	titleLabel.TextColor3 = Color3.fromRGB(235, 235, 235)
-	titleLabel.TextSize = 16
+	titleLabel.TextColor3 = Color3.fromRGB(215, 215, 215)
+	titleLabel.TextSize = 14
 	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 	local textLabel = Instance.new("TextLabel")
@@ -2501,56 +2508,38 @@ function library:Notify(config)
 	textLabel.Parent = notif
 	textLabel.BackgroundTransparency = 1
 	textLabel.BorderSizePixel = 0
-	textLabel.Position = UDim2.new(0, 44, 0, 34)
-	textLabel.Size = UDim2.new(1, -56, 0, 18)
+	textLabel.Position = UDim2.new(0, 14, 0, 26)
+	textLabel.Size = UDim2.new(1, -22, 0, 14)
 	textLabel.ZIndex = 203
 	textLabel.Font = Enum.Font.SourceSans
 	textLabel.Text = text
-	textLabel.TextColor3 = Color3.fromRGB(175, 175, 180)
-	textLabel.TextSize = 14
+	textLabel.TextColor3 = Color3.fromRGB(150, 150, 155)
+	textLabel.TextSize = 13
 	textLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-	local progressBarBg = Instance.new("Frame")
-	progressBarBg.Name = "ProgressBarBg"
-	progressBarBg.Parent = notif
-	progressBarBg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	progressBarBg.BackgroundTransparency = 0.93
-	progressBarBg.BorderSizePixel = 0
-	progressBarBg.Position = UDim2.new(0, 12, 1, -6)
-	progressBarBg.Size = UDim2.new(1, -24, 0, 3)
-	progressBarBg.ZIndex = 203
-
-	local progressBgCorner = Instance.new("UICorner")
-	progressBgCorner.CornerRadius = UDim.new(0, 2)
-	progressBgCorner.Parent = progressBarBg
-
-	local progressBar = Instance.new("Frame")
-	progressBar.Name = "ProgressBar"
-	progressBar.Parent = progressBarBg
-	progressBar.BackgroundColor3 = library.theme.Accent
-	progressBar.BorderSizePixel = 0
-	progressBar.Size = UDim2.new(1, 0, 1, 0)
-	progressBar.ZIndex = 204
-
-	local progressCorner = Instance.new("UICorner")
-	progressCorner.CornerRadius = UDim.new(0, 2)
-	progressCorner.Parent = progressBar
-
-	local contentH = 62
-	notif.Size = UDim2.new(0, 340, 0, contentH)
+	local contentH = text ~= "" and 48 or 34
+	notif.Size = UDim2.new(0, 280, 0, contentH)
+	accentBar.Size = UDim2.new(0, 3, 0, contentH)
 	notif.Position = UDim2.new(0, 0, 0, -(contentH + notifSpacing) * (#notificationHolder:GetChildren()))
 	notif.BackgroundTransparency = 1
+	if text == "" then
+		titleLabel.Position = UDim2.new(0, 14, 0, 8)
+		textLabel.Visible = false
+	end
 
-	TweenService:Create(notif, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.15}):Play()
-	TweenService:Create(notifShadow, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 0.5}):Play()
+	TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+		BackgroundTransparency = 0
+	}):Play()
+	TweenService:Create(accentBar, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+		Size = UDim2.new(0, 3, 0, contentH)
+	}):Play()
 
 	local function shiftAll()
 		local y = 0
 		for _, child in pairs(notificationHolder:GetChildren()) do
 			if child:IsA("Frame") then
-				child.Size = UDim2.new(0, 340, 0, contentH)
-				TweenService:Create(child, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
-				y = y + contentH + notifSpacing
+				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
+				y = y + child.AbsoluteSize.Y + notifSpacing
 			end
 		end
 	end
@@ -2560,22 +2549,17 @@ function library:Notify(config)
 	spawn(function()
 		local elapsed = 0
 		while notif.Parent do
-			wait(0.05)
-			elapsed = elapsed + 0.05
-			progressBar.Size = UDim2.new(1 - (elapsed / duration), 0, 1, 0)
+			wait(0.1)
+			elapsed = elapsed + 0.1
 			if elapsed >= duration then
-				TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1, Size = UDim2.new(0, 340, 0, 0)}):Play()
-				TweenService:Create(notifShadow, TweenInfo.new(0.3), {ImageTransparency = 1}):Play()
-				TweenService:Create(progressBarBg, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+				TweenService:Create(notif, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1, Size = UDim2.new(0, 280, 0, 0)}):Play()
+				TweenService:Create(accentBar, TweenInfo.new(0.25), {Size = UDim2.new(0, 3, 0, 0)}):Play()
 				for _, v in pairs(notif:GetChildren()) do
 					if v:IsA("TextLabel") then
-						TweenService:Create(v, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
-					end
-					if v:IsA("ImageLabel") and v.Name == "Icon" then
-						TweenService:Create(v, TweenInfo.new(0.3), {ImageTransparency = 1}):Play()
+						TweenService:Create(v, TweenInfo.new(0.25), {TextTransparency = 1}):Play()
 					end
 				end
-				wait(0.35)
+				wait(0.3)
 				notif:Destroy()
 				shiftAll()
 				break
@@ -2623,10 +2607,9 @@ function library:CreateSettings(winName)
 	sec2:AddButton('Test Notification', function()
 		library:Notify({title = 'Test', text = 'This is a test notification', duration = 3})
 	end)
+	local sec3 = win:AddSection('GUI Settings')
+	sec3:AddKeyBind('Toggle GUI', Enum.KeyCode.RightControl, function() end)
 	sec:AddSeparateBar()
-	sec:AddButton('Toggle Keybinds', function()
-		library:ToggleKeybinds()
-	end)
 	local sec3 = win:AddSection('Theme Manager')
 	library.ThemeManager:ApplyToGroupbox(sec3)
 	local sec4 = win:AddSection('Config Manager')
@@ -2635,118 +2618,19 @@ function library:CreateSettings(winName)
 end
 
 library.registry = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}, colorpickers = {}, keybindsList = {}}
-library.keybinds = {}
-local keybindListFrame = nil
-local keybindListVisible = false
+local guiVisible = true
+local guiToggleKey = Enum.KeyCode.RightControl
 
-local function createKeybindList()
-	if keybindListFrame then keybindListFrame:Destroy() end
-
-	keybindListFrame = Instance.new("Frame")
-	keybindListFrame.Name = "KeybindList"
-	keybindListFrame.Parent = PCR_1
-	keybindListFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 18)
-	keybindListFrame.BorderSizePixel = 0
-	keybindListFrame.Position = UDim2.new(0.01, 0, 0.01, 0)
-	keybindListFrame.Size = UDim2.new(0, 180, 0, 26)
-	keybindListFrame.ZIndex = 100
-	keybindListFrame.Visible = false
-
-	local listCorner = Instance.new("UICorner")
-	listCorner.CornerRadius = UDim.new(0, 6)
-	listCorner.Parent = keybindListFrame
-
-	local listStroke = Instance.new("UIStroke")
-	listStroke.Color = Color3.fromRGB(255, 255, 255)
-	listStroke.Transparency = 0.92
-	listStroke.Thickness = 1
-	listStroke.Parent = keybindListFrame
-
-	local title = Instance.new("TextLabel")
-	title.Name = "Title"
-	title.Parent = keybindListFrame
-	title.BackgroundTransparency = 1
-	title.BorderSizePixel = 0
-	title.Position = UDim2.new(0, 8, 0, 4)
-	title.Size = UDim2.new(1, -16, 0, 18)
-	title.ZIndex = 101
-	title.Font = Enum.Font.SourceSansSemibold
-	title.Text = "Keybinds"
-	title.TextColor3 = Color3.fromRGB(200, 200, 200)
-	title.TextSize = 15
-	title.TextXAlignment = Enum.TextXAlignment.Left
-
-	local listLayout = Instance.new("UIListLayout")
-	listLayout.Name = "Layout"
-	listLayout.Parent = keybindListFrame
-	listLayout.Padding = UDim.new(0, 2)
-	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-	local padding = Instance.new("UIPadding")
-	padding.Parent = keybindListFrame
-	padding.PaddingTop = UDim.new(0, 26)
-	padding.PaddingLeft = UDim.new(0, 8)
-	padding.PaddingBottom = UDim.new(0, 6)
+function library:SetGUIToggleKey(key)
+	guiToggleKey = key
 end
 
-local function refreshKeybindList()
-	if not keybindListFrame then createKeybindList() end
-
-	for _, v in pairs(keybindListFrame:GetChildren()) do
-		if v:IsA("Frame") and v.Name ~= "Title" then
-			v:Destroy()
-		end
+game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
+	if not gp and input.KeyCode == guiToggleKey then
+		guiVisible = not guiVisible
+		MAIN.Visible = guiVisible
 	end
-
-	local i = 0
-	for _, kb in pairs(library.keybinds) do
-		i = i + 1
-		local entry = Instance.new("Frame")
-		entry.Name = "Entry"
-		entry.Parent = keybindListFrame
-		entry.BackgroundTransparency = 1
-		entry.BorderSizePixel = 0
-		entry.Size = UDim2.new(1, -16, 0, 18)
-		entry.ZIndex = 101
-
-		local nameLabel = Instance.new("TextLabel")
-		nameLabel.Parent = entry
-		nameLabel.BackgroundTransparency = 1
-		nameLabel.BorderSizePixel = 0
-		nameLabel.Size = UDim2.new(0.65, 0, 1, 0)
-		nameLabel.ZIndex = 102
-		nameLabel.Font = Enum.Font.SourceSansSemibold
-		nameLabel.Text = kb.name
-		nameLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-		nameLabel.TextSize = 14
-		nameLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-		local keyLabel = Instance.new("TextLabel")
-		keyLabel.Parent = entry
-		keyLabel.BackgroundTransparency = 1
-		keyLabel.BorderSizePixel = 0
-		keyLabel.Size = UDim2.new(0.35, 0, 1, 0)
-		keyLabel.Position = UDim2.new(0.65, 0, 0, 0)
-		keyLabel.ZIndex = 102
-		keyLabel.Font = Enum.Font.SourceSansBold
-		keyLabel.Text = kb.key
-		keyLabel.TextColor3 = Color3.fromRGB(91, 133, 197)
-		keyLabel.TextSize = 14
-		keyLabel.TextXAlignment = Enum.TextXAlignment.Right
-	end
-
-	keybindListFrame.Size = UDim2.new(0, 180, 0, 26 + i * 20)
-end
-
-function library:ShowKeybinds(val)
-	keybindListVisible = val
-	if not keybindListFrame then createKeybindList() end
-	keybindListFrame.Visible = val
-end
-
-function library:ToggleKeybinds()
-	library:ShowKeybinds(not keybindListVisible)
-end
+end)
 
 -- ThemeManager addon --
 library.ThemeManager = {} do
