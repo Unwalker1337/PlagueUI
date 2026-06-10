@@ -2358,6 +2358,144 @@ function library:UpdateTheme(props)
 	end
 end
 
+local notificationHolder = nil
+local notifSpacing = 8
+
+local function getNotifAnchor()
+	local pos = library.theme.NotifPosition or "TopRight"
+	if pos == "TopRight" then return Vector2.new(1, 0), UDim2.new(1, -12, 0, 12)
+	elseif pos == "TopLeft" then return Vector2.new(0, 0), UDim2.new(0, 12, 0, 12)
+	elseif pos == "BottomRight" then return Vector2.new(1, 1), UDim2.new(1, -12, 1, -12)
+	elseif pos == "BottomLeft" then return Vector2.new(0, 1), UDim2.new(0, 12, 1, -12)
+	end
+end
+
+function library:Notify(config)
+	config = config or {}
+	local title = config.title or "Notification"
+	local text = config.text or ""
+	local duration = config.duration or 4
+
+	if not notificationHolder then
+		notificationHolder = Instance.new("Frame")
+		notificationHolder.Name = "NotificationHolder"
+		notificationHolder.Parent = PCR_1
+		notificationHolder.BackgroundTransparency = 1
+		notificationHolder.BorderSizePixel = 0
+		notificationHolder.Size = UDim2.new(0, 320, 1, 0)
+		notificationHolder.ZIndex = 200
+		local anchor, pos = getNotifAnchor()
+		notificationHolder.AnchorPoint = anchor
+		notificationHolder.Position = pos
+	end
+
+	local notif = Instance.new("Frame")
+	notif.Name = "Notification"
+	notif.Parent = notificationHolder
+	notif.BackgroundColor3 = Color3.fromRGB(18, 18, 20)
+	notif.BorderSizePixel = 0
+	notif.Size = UDim2.new(0, 320, 0, 0)
+	notif.ZIndex = 201
+	notif.ClipsDescendants = true
+
+	local notifCorner = Instance.new("UICorner")
+	notifCorner.CornerRadius = UDim.new(0, 8)
+	notifCorner.Parent = notif
+
+	local notifStroke = Instance.new("UIStroke")
+	notifStroke.Color = Color3.fromRGB(255, 255, 255)
+	notifStroke.Transparency = 0.92
+	notifStroke.Thickness = 1
+	notifStroke.Parent = notif
+
+	local accentBar = Instance.new("Frame")
+	accentBar.Name = "AccentBar"
+	accentBar.Parent = notif
+	accentBar.BackgroundColor3 = library.theme.Accent
+	accentBar.BorderSizePixel = 0
+	accentBar.Position = UDim2.new(0, 0, 0, 0)
+	accentBar.Size = UDim2.new(0, 4, 0, 0)
+	accentBar.ZIndex = 202
+
+	local accentCorner = Instance.new("UICorner")
+	accentCorner.CornerRadius = UDim.new(0, 4)
+	accentCorner.Parent = accentBar
+
+	local titleLabel = Instance.new("TextLabel")
+	titleLabel.Name = "Title"
+	titleLabel.Parent = notif
+	titleLabel.BackgroundTransparency = 1
+	titleLabel.BorderSizePixel = 0
+	titleLabel.Position = UDim2.new(0, 16, 0, 10)
+	titleLabel.Size = UDim2.new(1, -24, 0, 18)
+	titleLabel.ZIndex = 203
+	titleLabel.Font = Enum.Font.SourceSansSemibold
+	titleLabel.Text = title
+	titleLabel.TextColor3 = Color3.fromRGB(221, 221, 221)
+	titleLabel.TextSize = 15
+	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+	local textLabel = Instance.new("TextLabel")
+	textLabel.Name = "Text"
+	textLabel.Parent = notif
+	textLabel.BackgroundTransparency = 1
+	textLabel.BorderSizePixel = 0
+	textLabel.Position = UDim2.new(0, 16, 0, 30)
+	textLabel.Size = UDim2.new(1, -24, 0, 16)
+	textLabel.ZIndex = 203
+	textLabel.Font = Enum.Font.SourceSans
+	textLabel.Text = text
+	textLabel.TextColor3 = Color3.fromRGB(160, 160, 160)
+	textLabel.TextSize = 14
+	textLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+	local contentH = 50
+	notif.Size = UDim2.new(0, 320, 0, contentH)
+	accentBar.Size = UDim2.new(0, 4, 0, contentH)
+
+	local function shiftAll()
+		local y = 0
+		for _, child in pairs(notificationHolder:GetChildren()) do
+			if child:IsA("Frame") then
+				TweenService:Create(child, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, y)}):Play()
+				y = y + child.AbsoluteSize.Y + notifSpacing
+			end
+		end
+	end
+
+	shiftAll()
+
+	spawn(function()
+		local elapsed = 0
+		while notif.Parent do
+			elapsed = elapsed + 0.1
+			wait(0.1)
+			if elapsed >= duration then
+				TweenService:Create(notif, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1, Size = UDim2.new(0, 320, 0, 0)}):Play()
+				TweenService:Create(accentBar, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+				for _, v in pairs(notif:GetChildren()) do
+					if v:IsA("TextLabel") then
+						TweenService:Create(v, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+					end
+				end
+				wait(0.35)
+				notif:Destroy()
+				shiftAll()
+				break
+			end
+		end
+	end)
+end
+
+function library:SetNotifPosition(pos)
+	library.theme.NotifPosition = pos
+	if notificationHolder then
+		local anchor, position = getNotifAnchor()
+		notificationHolder.AnchorPoint = anchor
+		TweenService:Create(notificationHolder, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = position}):Play()
+	end
+end
+
 library:CreateSettings = function(winName)
 	winName = winName or 'Settings'
 	local win = library:AddWindow(winName)
