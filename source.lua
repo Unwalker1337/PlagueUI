@@ -2659,6 +2659,29 @@ function library:UpdateTheme(props)
 					v.BackgroundColor3 = library.theme.Accent
 				end
 			end
+			if not props.ToggleOn then
+				library.theme.ToggleOn = library.theme.Accent
+			end
+			if not props.SliderFill then
+				library.theme.SliderFill = library.theme.Accent
+			end
+		end
+		if props.Accent and not props.ToggleOn then
+			for _, t in pairs(library.registry.toggles) do
+				if t.ColorFrame then
+					TweenService:Create(t.ColorFrame, TweenInfo.new(0.26), {BackgroundColor3 = library.theme.Accent}):Play()
+				end
+			end
+		end
+		if props.Accent and not props.SliderFill then
+			for _, s in pairs(library.registry.sliders) do
+				if s.obj6 then
+					local obj7 = s.obj6:FindFirstChildOfClass("UIGradient")
+					if obj7 then
+						obj7.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, library.theme.Accent), ColorSequenceKeypoint.new(1, library.theme.Accent:lerp(Color3.new(0,0,0), 0.3))})
+					end
+				end
+			end
 		end
 	end)
 	pcall(function()
