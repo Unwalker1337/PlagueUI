@@ -2301,8 +2301,10 @@ function library:AddWindow(text)
 
 			Toggle.MouseButton1Click:Connect(function()
 				local function resizeContainer()
+					task.wait()
 					local tw2 = TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42)})
 					tw2.Completed:Connect(function()
+						task.wait()
 						local tw3 = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15)})
 						tw3.Completed:Connect(function() UpdateMainSize(nil, true) end)
 						tw3:Play()
@@ -2323,9 +2325,6 @@ function library:AddWindow(text)
 					K = false
 				end
 			end)
-
-
-
 
 			AddRipple(Toggle,TextLabel_2,Color3.fromRGB(180, 180, 180))
 			SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42)
@@ -2498,8 +2497,10 @@ function library:AddWindow(text)
 
 			Toggle.MouseButton1Click:Connect(function()
 				local function resizeContainer()
+					task.wait()
 					local tw2 = TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42)})
 					tw2.Completed:Connect(function()
+						task.wait()
 						local tw3 = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15)})
 						tw3.Completed:Connect(function() UpdateMainSize(nil, true) end)
 						tw3:Play()
@@ -3178,9 +3179,10 @@ end
 
 spawn(function()
 	wait(1)
-	if isfile(CM.Folder .. "/settings/autoload.txt") then
-		local name = readfile(CM.Folder .. "/settings/autoload.txt")
-		CM:Load(name .. ".json")
+	local cfg = library.ConfigManager
+	if isfile(cfg.Folder .. "/settings/autoload.txt") then
+		local name = readfile(cfg.Folder .. "/settings/autoload.txt")
+		cfg:Load(name .. ".json")
 	end
 end)
 
