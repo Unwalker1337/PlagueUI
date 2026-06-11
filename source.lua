@@ -2300,29 +2300,20 @@ function library:AddWindow(text)
 			end
 
 			Toggle.MouseButton1Click:Connect(function()
-				local oldDrpSize = DRPDOWN.Size
+				local drpSize = UIListLayout.AbsoluteContentSize.Y + 11
+				local delta = drpSize - 25
 				if not K then
-					DRPDOWN.Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11)
-					local secTarget = SECTION2UILIB.AbsoluteContentSize.Y + 42
-					local parTarget = LIST.AbsoluteContentSize.Y + 15
-					DRPDOWN.Size = oldDrpSize
+					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, drpSize)}):Play()
+					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y + delta)
+					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y + delta)
+					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 180}):Play()
-					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11)}):Play()
-					TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, secTarget)}):Play()
-					local tw = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, parTarget)})
-					tw.Completed:Connect(function() UpdateMainSize(nil, true) end)
-					tw:Play()
 					K = true
 				else
-					DRPDOWN.Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)
-					local secTarget = SECTION2UILIB.AbsoluteContentSize.Y + 42
-					local parTarget = LIST.AbsoluteContentSize.Y + 15
-					DRPDOWN.Size = oldDrpSize
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
-					TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, secTarget)}):Play()
-					local tw = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, parTarget)})
-					tw.Completed:Connect(function() UpdateMainSize(nil, true) end)
-					tw:Play()
+					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y - delta)
+					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y - delta)
+					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = false
 				end
@@ -2498,29 +2489,20 @@ function library:AddWindow(text)
 			end
 
 			Toggle.MouseButton1Click:Connect(function()
-				local oldDrpSize = DRPDOWN.Size
+				local drpSize = UIListLayout.AbsoluteContentSize.Y + 11
+				local delta = drpSize - 25
 				if not K then
-					DRPDOWN.Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11)
-					local secTarget = SECTION2UILIB.AbsoluteContentSize.Y + 42
-					local parTarget = LIST.AbsoluteContentSize.Y + 15
-					DRPDOWN.Size = oldDrpSize
+					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, drpSize)}):Play()
+					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y + delta)
+					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y + delta)
+					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 180}):Play()
-					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11)}):Play()
-					TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, secTarget)}):Play()
-					local tw = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, parTarget)})
-					tw.Completed:Connect(function() UpdateMainSize(nil, true) end)
-					tw:Play()
 					K = true
 				else
-					DRPDOWN.Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)
-					local secTarget = SECTION2UILIB.AbsoluteContentSize.Y + 42
-					local parTarget = LIST.AbsoluteContentSize.Y + 15
-					DRPDOWN.Size = oldDrpSize
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
-					TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, secTarget)}):Play()
-					local tw = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, parTarget)})
-					tw.Completed:Connect(function() UpdateMainSize(nil, true) end)
-					tw:Play()
+					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y - delta)
+					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y - delta)
+					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = false
 				end
