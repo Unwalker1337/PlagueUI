@@ -2935,26 +2935,10 @@ end
 function library:CreateSettings(winName)
 	winName = winName or 'Settings'
 	local win = library:AddWindow(winName)
-	local sec = win:AddSection('Theme Colors')
+	local sec = win:AddSection('Accent Color')
 	sec:AddColorPallete('Accent Color', library.theme.Accent, function(c)
 		library:UpdateTheme({Accent = c})
 	end)
-	sec:AddColorPallete('Main Background', library.theme.MainBg, function(c)
-		library:UpdateTheme({MainBg = c})
-	end)
-	sec:AddColorPallete('Section Background', library.theme.SectionBg, function(c)
-		library:UpdateTheme({SectionBg = c})
-	end)
-	sec:AddColorPallete('Text Primary', library.theme.TextPrimary, function(c)
-		library:UpdateTheme({TextPrimary = c})
-	end)
-	sec:AddColorPallete('Toggle On', library.theme.ToggleOn, function(c)
-		library:UpdateTheme({ToggleOn = c})
-	end)
-	sec:AddColorPallete('Slider Fill', library.theme.SliderFill, function(c)
-		library:UpdateTheme({SliderFill = c})
-	end)
-	sec:AddSeparateBar()
 	local sec2 = win:AddSection('Notifications')
 	sec2:AddDropdown('Position', {'TopRight','TopLeft','BottomRight','BottomLeft'}, library.theme.NotifPosition or 'TopRight', function(v)
 		library:SetNotifPosition(v)
@@ -2974,8 +2958,6 @@ function library:CreateSettings(winName)
 		PCR_1:Destroy()
 		library = nil
 	end)
-	local sec3b = win:AddSection('Theme Manager')
-	library.ThemeManager:ApplyToGroupbox(sec3b)
 	local sec4 = win:AddSection('Config Manager')
 	library.ConfigManager:ApplyToGroupbox(sec4)
 	return win
@@ -3066,128 +3048,6 @@ game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
 		toggleGUI()
 	end
 end)
-
--- ThemeManager addon --
-library.ThemeManager = {} do
-	local TM = library.ThemeManager
-	TM.Folder = "PlagueUI_Settings"
-
-	TM.BuiltInThemes = {
-		Default = {MainBg = "101012", SectionBg = "121214", InnerBg = "1a1a1e", Accent = "5b85c5", TextPrimary = "dddde0", TextSecondary = "989898", ToggleOn = "547ab5", ToggleOff = "191919", SliderFill = "5882c1"},
-		Midnight = {MainBg = "0a0a0f", SectionBg = "0d0d14", InnerBg = "12121a", Accent = "4466aa", TextPrimary = "ccccdd", TextSecondary = "777788", ToggleOn = "3d5b99", ToggleOff = "121215", SliderFill = "4466aa"},
-		Blood = {MainBg = "140a0a", SectionBg = "1a0d0d", InnerBg = "241212", Accent = "cc3333", TextPrimary = "ddcccc", TextSecondary = "997777", ToggleOn = "aa2a2a", ToggleOff = "1a0d0d", SliderFill = "cc3333"},
-		Forest = {MainBg = "0a120a", SectionBg = "0d160d", InnerBg = "122012", Accent = "3d8b37", TextPrimary = "ccddcc", TextSecondary = "779977", ToggleOn = "2f7a2a", ToggleOff = "0d160d", SliderFill = "3d8b37"},
-		Ocean = {MainBg = "0a0c14", SectionBg = "0d101a", InnerBg = "121824", Accent = "2277bb", TextPrimary = "ccd5dd", TextSecondary = "778899", ToggleOn = "1a66aa", ToggleOff = "0d101a", SliderFill = "2277bb"},
-		Amber = {MainBg = "14100a", SectionBg = "1a140d", InnerBg = "241c12", Accent = "d4882a", TextPrimary = "ddd5cc", TextSecondary = "998a77", ToggleOn = "bb7722", ToggleOff = "1a140d", SliderFill = "d4882a"},
-	}
-
-	function TM:HexToRGB(hex)
-		return Color3.fromRGB(tonumber(hex:sub(1,2), 16), tonumber(hex:sub(3,4), 16), tonumber(hex:sub(5,6), 16))
-	end
-
-	function TM:ApplyTheme(name)
-		local data = TM.BuiltInThemes[name]
-		if not data then return end
-		local props = {}
-		for k, v in pairs(data) do
-			props[k] = TM:HexToRGB(v)
-		end
-		library:UpdateTheme(props)
-		library:Notify({title = "Theme", text = "Applied " .. name, duration = 2})
-	end
-
-	function TM:SaveCustomTheme(name)
-		if name:gsub(" ", "") == "" then return library:Notify({title = "Error", text = "Invalid name", duration = 3}) end
-		local data = {}
-		for k, v in pairs(library.theme) do
-			if k ~= "NotifPosition" then
-				data[k] = ("%02x%02x%02x"):format(v.R * 255, v.G * 255, v.B * 255)
-			end
-		end
-		writefile(TM.Folder .. "/themes/" .. name .. ".json", game:GetService("HttpService"):JSONEncode(data))
-		library:Notify({title = "Theme", text = "Saved " .. name, duration = 2})
-	end
-
-	function TM:LoadCustomTheme(name)
-		local path = TM.Folder .. "/themes/" .. name
-		if not isfile(path) then return end
-		local _, data = pcall(game:GetService("HttpService").JSONDecode, game:GetService("HttpService"), readfile(path))
-		if not data then return end
-		local props = {}
-		for k, v in pairs(data) do
-			props[k] = TM:HexToRGB(v)
-		end
-		library:UpdateTheme(props)
-		library:Notify({title = "Theme", text = "Loaded " .. name, duration = 2})
-	end
-
-	function TM:GetCustomThemeList()
-		if not isfolder(TM.Folder .. "/themes") then return {} end
-		local list = listfiles(TM.Folder .. "/themes")
-		local out = {}
-		for _, file in pairs(list) do
-			if file:sub(-5) == ".json" then
-				local name = file:match("([^/\\]+)%.json$")
-				if name then table.insert(out, name) end
-			end
-		end
-		return out
-	end
-
-	function TM:ApplyToGroupbox(section)
-		section:AddLabel("Theme Presets")
-		local themeNames = {}
-		for name, _ in pairs(TM.BuiltInThemes) do
-			table.insert(themeNames, name)
-		end
-		section:AddDropdown("Select Preset", themeNames, themeNames[1], function(v) TM:ApplyTheme(v) end)
-		section:AddSeparateBar()
-		section:AddLabel("Custom Themes")
-		section:AddTextBox("Custom Theme Name", "Enter name", false, 5, function() end)
-		section:AddDropdown("Custom Theme List", TM:GetCustomThemeList(), nil, function(v) end)
-		section:AddButton("Save Custom Theme", function()
-			local tb = library.registry.textboxes["Custom Theme Name"]
-			local name = tb and tb.obj5.Text or "MyTheme"
-			if name and name ~= "" then
-				TM:SaveCustomTheme(name)
-				local list = TM:GetCustomThemeList()
-				library:SetDropdownOptions("Custom Theme List", list)
-				library.registry.dropdowns["Custom Theme List"].Value = name
-			end
-		end)
-		section:AddButton("Load Custom Theme", function()
-			local dd = library.registry.dropdowns["Custom Theme List"]
-			if dd and dd.Value then
-				TM:LoadCustomTheme(dd.Value .. ".json")
-			end
-		end)
-		section:AddSeparateBar()
-		local autoloadLabel = section:AddLabel("No autoload set")
-		local function refreshAutoloadLabel()
-			if isfile(TM.Folder .. "/autoload.txt") then
-				autoloadLabel.Text = "Autoload: " .. readfile(TM.Folder .. "/autoload.txt")
-			else
-				autoloadLabel.Text = "No autoload set"
-			end
-		end
-		refreshAutoloadLabel()
-		section:AddButton("Set Autoload Theme", function()
-			local dd = library.registry.dropdowns["Custom Theme List"]
-			if dd and dd.Value then
-				writefile(TM.Folder .. "/autoload.txt", dd.Value)
-				library:Notify({title = "Theme", text = "Autoload set to " .. dd.Value, duration = 2})
-				refreshAutoloadLabel()
-			end
-		end)
-		section:AddButton("Remove Autoload Theme", function()
-			local path = TM.Folder .. "/autoload.txt"
-			if isfile(path) then delfile(path)
-				library:Notify({title = "Theme", text = "Autoload removed", duration = 2})
-				refreshAutoloadLabel()
-			end
-		end)
-	end
-end
 
 -- ConfigManager addon --
 library.ConfigManager = {} do
@@ -3297,10 +3157,6 @@ end
 
 spawn(function()
 	wait(1)
-	if isfile(TM.Folder .. "/autoload.txt") then
-		local name = readfile(TM.Folder .. "/autoload.txt")
-		TM:LoadCustomTheme(name .. ".json")
-	end
 	if isfile(CM.Folder .. "/settings/autoload.txt") then
 		local name = readfile(CM.Folder .. "/settings/autoload.txt")
 		CM:Load(name .. ".json")
