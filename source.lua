@@ -2303,21 +2303,23 @@ function library:AddWindow(text)
 
 			Toggle.MouseButton1Click:Connect(function()
 				if not K then
-					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 180}):Play()	
-					DRPDOWN:TweenSize(UDim2.fromOffset(DRPDOWN.AbsoluteSize.X,  UIListLayout.AbsoluteContentSize.Y + 11),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true) 
+					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 180}):Play()
+					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11)}):Play()
 					K = not K
 				else
-					DRPDOWN:TweenSize(UDim2.new(0,DRPDOWN.AbsoluteSize.X,0, 25),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true) 
-					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 0}):Play()	
+					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
+					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = not K
 				end
-				wait(.3)
-				SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X,  SECTION2UILIB.AbsoluteContentSize.Y + 42),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true) 
-				wait(.2)
-				_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X,  LIST.AbsoluteContentSize.Y + 15),Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true) 
-				wait(.2)
-				UpdateMainSize(nil,true)
-
+				task.spawn(function()
+					task.wait(0.2)
+					TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42)}):Play()
+					local tw = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15)})
+					tw.Completed:Connect(function()
+						UpdateMainSize(nil, true)
+					end)
+					tw:Play()
+				end)
 			end)
 
 
@@ -2491,37 +2493,37 @@ function library:AddWindow(text)
 					pcall(function() Action(result) end)
 				end)
 
-				SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
-				task.wait()
-				_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
-				task.wait()
+				TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42)}):Play()
+				task.wait(0.2)
+				TweenService:Create(_PARENT, TweenInfo.new(0.2), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15)}):Play()
+				task.wait(0.2)
 				UpdateMainSize(nil, true)
 			end
 
 			Toggle.MouseButton1Click:Connect(function()
 				if not K then
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 180}):Play()
-					DRPDOWN:TweenSize(UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, UIListLayout.AbsoluteContentSize.Y + 11)}):Play()
 					K = not K
 				else
-					DRPDOWN:TweenSize(UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
+					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = not K
 				end
-				wait(.3)
-				SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-				wait(.2)
-				_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.2, true)
-				wait(.2)
-				UpdateMainSize(nil, true)
+				task.spawn(function()
+					task.wait(0.2)
+					TweenService:Create(SECTIONHOLDER, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42)}):Play()
+					local tw = TweenService:Create(_PARENT, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15)})
+					tw.Completed:Connect(function()
+						UpdateMainSize(nil, true)
+					end)
+					tw:Play()
+				end)
 			end)
 
 			AddRipple(Toggle, TextLabel_2, Color3.fromRGB(180, 180, 180))
-			SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
-			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
-			SECTIONHOLDER:TweenSize(UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
-			wait()
-			_PARENT:TweenSize(UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0, true)
+			SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTION2UILIB.AbsoluteContentSize.Y + 42)
+			_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, LIST.AbsoluteContentSize.Y + 15)
 			UpdateMainSize(nil, true)
 			updateLabel()
 		end
