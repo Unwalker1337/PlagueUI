@@ -3068,11 +3068,7 @@ function library:SetGUIToggleKey(key)
 	guiToggleKey = key
 end
 
-game:GetService("UserInputService").InputBegan:Connect(function(input, gp)
-	if not gp and input.KeyCode == guiToggleKey then
-		toggleGUI()
-	end
-end)
+
 
 -- ConfigManager addon --
 library.ConfigManager = {} do
