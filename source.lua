@@ -2302,12 +2302,11 @@ function library:AddWindow(text)
 			Toggle.MouseButton1Click:Connect(function()
 				local drpSize = UIListLayout.AbsoluteContentSize.Y + 11
 				local delta = drpSize - 25
-				logDebug("Dropdown '"..Text.."' toggle, K=", K, "drpSize=", drpSize, "delta=", delta, "SECTIONHOLDER.Y=", SECTIONHOLDER.AbsoluteSize.Y, "_PARENT.Y=", _PARENT.AbsoluteSize.Y)
+				if library._debug then print("[Plague Debug] Dropdown '"..Text.."' toggle, K=", K, "drpSize=", drpSize, "delta=", delta, "SECTIONHOLDER.Y=", SECTIONHOLDER.AbsoluteSize.Y, "_PARENT.Y=", _PARENT.AbsoluteSize.Y) end
 				if not K then
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, drpSize)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y + delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y + delta)
-					logDebug("  Open: SECTIONHOLDER +=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y + delta, "_PARENT +=", delta, "->", _PARENT.AbsoluteSize.Y + delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 180}):Play()
 					K = true
@@ -2315,7 +2314,6 @@ function library:AddWindow(text)
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y - delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y - delta)
-					logDebug("  Close: SECTIONHOLDER -=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y - delta, "_PARENT -=", delta, "->", _PARENT.AbsoluteSize.Y - delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = false
@@ -2494,12 +2492,11 @@ function library:AddWindow(text)
 			Toggle.MouseButton1Click:Connect(function()
 				local drpSize = UIListLayout.AbsoluteContentSize.Y + 11
 				local delta = drpSize - 25
-				logDebug("MultiDropdown '"..Text.."' toggle, K=", K, "drpSize=", drpSize, "delta=", delta, "SECTIONHOLDER.Y=", SECTIONHOLDER.AbsoluteSize.Y, "_PARENT.Y=", _PARENT.AbsoluteSize.Y)
+				if library._debug then print("[Plague Debug] MultiDropdown '"..Text.."' toggle, K=", K, "drpSize=", drpSize, "delta=", delta, "SECTIONHOLDER.Y=", SECTIONHOLDER.AbsoluteSize.Y, "_PARENT.Y=", _PARENT.AbsoluteSize.Y) end
 				if not K then
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, drpSize)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y + delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y + delta)
-					logDebug("  Open: SECTIONHOLDER +=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y + delta, "_PARENT +=", delta, "->", _PARENT.AbsoluteSize.Y + delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 180}):Play()
 					K = true
@@ -2507,7 +2504,6 @@ function library:AddWindow(text)
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y - delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y - delta)
-					logDebug("  Close: SECTIONHOLDER -=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y - delta, "_PARENT -=", delta, "->", _PARENT.AbsoluteSize.Y - delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = false
@@ -2950,6 +2946,38 @@ function library:SetNotifPosition(pos)
 	end
 end
 
+library.registry = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}, colorpickers = {}, keybindsList = {}}
+library._debug = false
+local guiVisible = true
+local guiToggleKey = Enum.KeyCode.RightControl
+
+function library:SetDebug(v)
+	library._debug = v
+end
+
+local function toggleGUI()
+	guiVisible = not guiVisible
+	if guiVisible then
+		MAIN.Visible = true
+		MAIN.BackgroundTransparency = 1
+		TweenService:Create(MAIN, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+			BackgroundTransparency = 0
+		}):Play()
+	else
+		TweenService:Create(MAIN, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+			BackgroundTransparency = 1
+		}):Play()
+		task.delay(0.25, function()
+			MAIN.Visible = false
+			MAIN.BackgroundTransparency = 0
+		end)
+	end
+end
+
+function library:SetGUIToggleKey(key)
+	guiToggleKey = key
+end
+
 function library:CreateSettings(winName)
 	winName = winName or 'Settings'
 	local win = library:AddWindow(winName)
@@ -3032,44 +3060,6 @@ function library:SetDropdownOptions(name, newOptions)
 			TweenService:Create(OPTION, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(28, 28, 28)}):Play()
 		end)
 	end
-end
-
-library.registry = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}, colorpickers = {}, keybindsList = {}}
-library._debug = false
-local guiVisible = true
-local guiToggleKey = Enum.KeyCode.RightControl
-
-function library:SetDebug(v)
-	library._debug = v
-end
-
-local function logDebug(...)
-	if library._debug then
-		print("[Plague Debug]", ...)
-	end
-end
-
-local function toggleGUI()
-	guiVisible = not guiVisible
-	if guiVisible then
-		MAIN.Visible = true
-		MAIN.BackgroundTransparency = 1
-		TweenService:Create(MAIN, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-			BackgroundTransparency = 0
-		}):Play()
-	else
-		TweenService:Create(MAIN, TweenInfo.new(0.2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
-			BackgroundTransparency = 1
-		}):Play()
-		task.delay(0.25, function()
-			MAIN.Visible = false
-			MAIN.BackgroundTransparency = 0
-		end)
-	end
-end
-
-function library:SetGUIToggleKey(key)
-	guiToggleKey = key
 end
 
 
