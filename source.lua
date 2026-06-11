@@ -2302,10 +2302,12 @@ function library:AddWindow(text)
 			Toggle.MouseButton1Click:Connect(function()
 				local drpSize = UIListLayout.AbsoluteContentSize.Y + 11
 				local delta = drpSize - 25
+				logDebug("Dropdown '"..Text.."' toggle, K=", K, "drpSize=", drpSize, "delta=", delta, "SECTIONHOLDER.Y=", SECTIONHOLDER.AbsoluteSize.Y, "_PARENT.Y=", _PARENT.AbsoluteSize.Y)
 				if not K then
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, drpSize)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y + delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y + delta)
+					logDebug("  Open: SECTIONHOLDER +=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y + delta, "_PARENT +=", delta, "->", _PARENT.AbsoluteSize.Y + delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 180}):Play()
 					K = true
@@ -2313,6 +2315,7 @@ function library:AddWindow(text)
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y - delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y - delta)
+					logDebug("  Close: SECTIONHOLDER -=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y - delta, "_PARENT -=", delta, "->", _PARENT.AbsoluteSize.Y - delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2 , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = false
@@ -2491,10 +2494,12 @@ function library:AddWindow(text)
 			Toggle.MouseButton1Click:Connect(function()
 				local drpSize = UIListLayout.AbsoluteContentSize.Y + 11
 				local delta = drpSize - 25
+				logDebug("MultiDropdown '"..Text.."' toggle, K=", K, "drpSize=", drpSize, "delta=", delta, "SECTIONHOLDER.Y=", SECTIONHOLDER.AbsoluteSize.Y, "_PARENT.Y=", _PARENT.AbsoluteSize.Y)
 				if not K then
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(DRPDOWN.AbsoluteSize.X, drpSize)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y + delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y + delta)
+					logDebug("  Open: SECTIONHOLDER +=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y + delta, "_PARENT +=", delta, "->", _PARENT.AbsoluteSize.Y + delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 180}):Play()
 					K = true
@@ -2502,6 +2507,7 @@ function library:AddWindow(text)
 					TweenService:Create(DRPDOWN, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, DRPDOWN.AbsoluteSize.X, 0, 25)}):Play()
 					SECTIONHOLDER.Size = UDim2.fromOffset(SECTIONHOLDER.AbsoluteSize.X, SECTIONHOLDER.AbsoluteSize.Y - delta)
 					_PARENT.Size = UDim2.fromOffset(_PARENT.AbsoluteSize.X, _PARENT.AbsoluteSize.Y - delta)
+					logDebug("  Close: SECTIONHOLDER -=", delta, "->", SECTIONHOLDER.AbsoluteSize.Y - delta, "_PARENT -=", delta, "->", _PARENT.AbsoluteSize.Y - delta)
 					UpdateMainSize(nil, true)
 					TweenService:Create(TextLabel_2, TweenInfo.new(0.26, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 0}):Play()
 					K = false
@@ -3029,8 +3035,19 @@ function library:SetDropdownOptions(name, newOptions)
 end
 
 library.registry = {toggles = {}, sliders = {}, dropdowns = {}, textboxes = {}, colorpickers = {}, keybindsList = {}}
+library._debug = false
 local guiVisible = true
 local guiToggleKey = Enum.KeyCode.RightControl
+
+function library:SetDebug(v)
+	library._debug = v
+end
+
+local function logDebug(...)
+	if library._debug then
+		print("[Plague Debug]", ...)
+	end
+end
 
 local function toggleGUI()
 	guiVisible = not guiVisible
