@@ -16,7 +16,7 @@ local Rage = library:AddWindow('Rage')
 local Visuals = library:AddWindow('Visuals')
 local Misc = library:AddWindow('Misc')
 
--- Create Settings tab (includes ThemeManager + ConfigManager)
+-- Create Settings tab (includes ConfigManager)
 local Settings = library:CreateSettings('Settings')
 
 -- ============================================
