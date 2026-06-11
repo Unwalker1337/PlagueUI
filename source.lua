@@ -1673,8 +1673,8 @@ function library:AddWindow(text)
 
 			local function Update()
 				if activated == false then
-					TweenService:Create(color , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(84, 122, 181)}):Play()
-					TweenService:Create(UIStroke, TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {Color = Color3.fromRGB(84, 122, 181)}):Play()
+					TweenService:Create(color , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {BackgroundColor3 = library.theme.ToggleOn or Color3.fromRGB(84, 122, 181)}):Play()
+					TweenService:Create(UIStroke, TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {Color = library.theme.ToggleOn or Color3.fromRGB(84, 122, 181)}):Play()
 					TweenService:Create(TextLabel, tweenInfo, { TextColor3 = Color3.fromRGB(180, 180, 180) }):Play()
 					spawn(function()
 						pcall(function()
@@ -1683,8 +1683,8 @@ function library:AddWindow(text)
 					end)
 					activated = true
 				elseif activated == true then
-					TweenService:Create(color , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {BackgroundColor3 = Color3.fromRGB(25,25,25)}):Play()
-					TweenService:Create(UIStroke, TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {Color = Color3.fromRGB(52, 52, 52)}):Play()
+					TweenService:Create(color , TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {BackgroundColor3 = library.theme.ToggleOff or Color3.fromRGB(25,25,25)}):Play()
+					TweenService:Create(UIStroke, TweenInfo.new(0.26, Enum.EasingStyle.Quad , Enum.EasingDirection.InOut), {Color = library.theme.ToggleOff and library.theme.ToggleOff:lerp(Color3.new(1,1,1), 0.3) or Color3.fromRGB(52, 52, 52)}):Play()
 					TweenService:Create(TextLabel, tweenInfo, { TextColor3 = Color3.fromRGB(84, 84, 84) }):Play()
 					spawn(function()
 						pcall(function()
